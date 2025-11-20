@@ -1,0 +1,15 @@
+- [ ] Show the teachers name on the main view as well
+- [ ] Add option to edits teacher name
+- [ ] Add a collapsible side menu which have  options 
+  - [ ] Main View
+  - [ ] Archived Classes
+  - [ ] Currently Missing Assignments
+- [ ] Add the ability for the student to change the view from this card like grid based to list based
+- [ ] Automatically archive the classes that are archived by the teacher, and differentiate them from the ones that the student have archived, Now we can drop the ACTIVEand ARCHIVED labels from the main view 
+- [ ] Now since the bottom white portion is of no use now (since the view stream can be performed by clicking the card itself)
+- [ ] Add theme options (Light and Dark)
+- [ ] The currently missing assignments view should have:
+  - [ ] Sorting the assignments (based on dur date or marks)
+  - [ ] grouping the assignment on basis of class
+  - [ ] filtering assignments based on the tags they assigned
+- [ ] Adding ability to reorder the cards in grid view and list in list view

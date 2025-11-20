@@ -1,0 +1,172 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Course Banner -->
+    <div class="bg-blue-600 rounded-lg shadow-md mb-6 relative overflow-hidden h-48" {% if course.custom_banner %}style="background-image: url('{{ course.custom_banner }}'); background-size: cover; background-position: center;" {% endif %}>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 p-6 text-white">
+            <h1 class="text-3xl font-bold">{{ course.name }}</h1>
+            <p class="text-xl opacity-90">{{ course.section }}</p>
+        </div>
+    </div>
+
+    <!-- Tags & Filters -->
+    <div class="bg-white p-4 rounded-lg shadow-md mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-gray-600 font-semibold mr-2">Filter:</span>
+            <button onclick="filterByTag('all')" class="px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300 text-sm font-medium transition-colors active-filter ring-2 ring-offset-2 ring-blue-500" data-tag="all">All</button>
+            {% for tag in tags %}
+            <button onclick="filterByTag('{{ tag.id }}')" class="px-3 py-1 rounded-full bg-{{ tag.color }}-100 text-{{ tag.color }}-800 hover:bg-{{ tag.color }}-200 text-sm font-medium transition-colors" data-tag="{{ tag.id }}">{{ tag.name }}</button>
+            {% endfor %}
+        </div>
+
+        {% if tags|length < 6 %}
+        <form action="{{ url_for('create_tag', course_id=course.id) }}" method="POST" class="flex items-center gap-2">
+            <input type="text" name="name" placeholder="New Tag" class="border rounded px-2 py-1 text-sm" required maxlength="15" />
+            <select name="color" class="border rounded px-2 py-1 text-sm">
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+                <option value="purple">Purple</option>
+                <option value="pink">Pink</option>
+            </select>
+            <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Add</button>
+        </form>
+        {% else %}
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-500">Tag limit reached (6/6)</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Stream -->
+    <div class="space-y-6">
+        {% for item in stream_items %} {% set item_tags = item_tags_map.get(item.id, []) %} {% set tag_ids = [] %} {% for t in item_tags %}{% set _ = tag_ids.append(t.id|string) %}{% endfor %}
+
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow stream-item relative group" data-tags="{{ tag_ids|join(',') }}">
+            <!-- Tag Management (Top Right) -->
+            <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="relative inline-block text-left">
+                    <button onclick="document.getElementById('tag-menu-{{ item.id }}').classList.toggle('hidden')" class="text-gray-400 hover:text-gray-600 p-2">
+                        <i class="fas fa-tag"></i>
+                    </button>
+                    <div id="tag-menu-{{ item.id }}" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                        <div class="py-1">
+                            {% for tag in tags %}
+                            <form action="{{ url_for('toggle_item_tag', course_id=course.id, item_id=item.id) }}" method="POST">
+                                <input type="hidden" name="tag_id" value="{{ tag.id }}" />
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex justify-between items-center">
+                                    <span>{{ tag.name }}</span>
+                                    {% if tag in item_tags %}
+                                    <i class="fas fa-check text-green-500"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+                            {% endfor %} {% if not tags %}
+                            <span class="block px-4 py-2 text-sm text-gray-500">No tags created yet.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Assigned Tags -->
+            <div class="mb-2 flex gap-2 flex-wrap">
+                {% for tag in item_tags %}
+                <span class="px-2 py-0.5 rounded text-xs font-medium bg-{{ tag.color }}-100 text-{{ tag.color }}-800"> {{ tag.name }} </span>
+                {% endfor %}
+            </div>
+
+            <div class="flex items-start gap-4">
+                <!-- Icon based on type -->
+                <div class="p-3 rounded-full {% if item.type == 'announcement' %}bg-blue-100 text-blue-600 {% elif item.type == 'assignment' %}bg-green-100 text-green-600 {% elif item.type == 'material' %}bg-gray-100 text-gray-600 {% endif %}">
+                    {% if item.type == 'announcement' %}
+                    <i class="fas fa-bullhorn text-xl w-6 text-center"></i>
+                    {% elif item.type == 'assignment' %}
+                    <i class="fas fa-clipboard-list text-xl w-6 text-center"></i>
+                    {% else %}
+                    <i class="fas fa-book text-xl w-6 text-center"></i>
+                    {% endif %}
+                </div>
+
+                <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{% if item.type == 'announcement' %} Announcement {% else %} {{ item.title }} {% endif %}</h3>
+                            <p class="text-sm text-gray-500">Posted {{ item.creationTime[:10] }}</p>
+                        </div>
+                        {% if item.alternateLink %}
+                        <a href="{{ item.alternateLink }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm" title="Open in Google Classroom"> <i class="fas fa-external-link-alt"></i> </a>
+                        {% endif %}
+                    </div>
+
+                    {% if item.text %}
+                    <div class="mt-2 text-gray-700 whitespace-pre-wrap">{{ item.text }}</div>
+                    {% endif %} {% if item.description %}
+                    <div class="mt-2 text-gray-700 whitespace-pre-wrap">{{ item.description }}</div>
+                    {% endif %}
+
+                    <!-- Materials/Attachments -->
+                    {% if item.materials %}
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {% for mat in item.materials %} {% if mat.driveFile %}
+                        <a href="{{ mat.driveFile.driveFile.alternateLink }}" target="_blank" class="flex items-center p-2 border rounded hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-{{ get_file_icon(mat.driveFile.driveFile.mimeType) }} text-xl mr-3 w-6 text-center"></i>
+                            <span class="text-sm truncate">{{ mat.driveFile.driveFile.title }}</span>
+                        </a>
+
+                        {% elif mat.youtubeVideo %}
+                        <a href="{{ mat.youtubeVideo.alternateLink }}" target="_blank" class="flex items-center p-2 border rounded hover:bg-gray-50 transition-colors">
+                            <img src="{{ mat.youtubeVideo.thumbnailUrl }}" class="w-8 h-6 object-cover mr-2 rounded" />
+                            <span class="text-sm truncate">{{ mat.youtubeVideo.title }}</span>
+                        </a>
+
+                        {% elif mat.link %}
+                        <a href="{{ mat.link.url }}" target="_blank" class="flex items-center p-2 border rounded hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-link text-gray-500 text-xl mr-3 w-6 text-center"></i>
+                            <span class="text-sm truncate">{{ mat.link.title }}</span>
+                        </a>
+                        {% endif %} {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %} {% if not stream_items %}
+        <div class="text-center py-10 text-gray-500">No posts yet.</div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function filterByTag(tagId) {
+        const items = document.querySelectorAll(".stream-item");
+        items.forEach((item) => {
+            const tags = item.dataset.tags ? item.dataset.tags.split(",") : [];
+            if (tagId === "all" || tags.includes(tagId.toString())) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        // Update active state
+        document.querySelectorAll('button[onclick^="filterByTag"]').forEach((btn) => {
+            if (btn.getAttribute("data-tag") === tagId.toString()) {
+                btn.classList.add("ring-2", "ring-offset-2", "ring-blue-500");
+            } else {
+                btn.classList.remove("ring-2", "ring-offset-2", "ring-blue-500");
+            }
+        });
+    }
+
+    // Close menus when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".relative.inline-block")) {
+            document.querySelectorAll('[id^="tag-menu-"]').forEach((menu) => {
+                menu.classList.add("hidden");
+            });
+        }
+    });
+</script>
+{% endblock %}
