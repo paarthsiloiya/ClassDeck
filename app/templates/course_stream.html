@@ -170,20 +170,52 @@
 </div>
 
 <script>
+    let selectedTags = new Set(["all"]);
+
     function filterByTag(tagId) {
+        tagId = tagId.toString();
+
+        // Update selection logic
+        if (tagId === "all") {
+            selectedTags.clear();
+            selectedTags.add("all");
+        } else {
+            if (selectedTags.has("all")) {
+                selectedTags.delete("all");
+            }
+
+            if (selectedTags.has(tagId)) {
+                selectedTags.delete(tagId);
+            } else {
+                selectedTags.add(tagId);
+            }
+
+            if (selectedTags.size === 0) {
+                selectedTags.add("all");
+            }
+        }
+
         const items = document.querySelectorAll(".stream-item");
         items.forEach((item) => {
-            const tags = item.dataset.tags ? item.dataset.tags.split(",") : [];
-            if (tagId === "all" || tags.includes(tagId.toString())) {
+            if (selectedTags.has("all")) {
                 item.style.display = "block";
             } else {
-                item.style.display = "none";
+                const itemTags = item.dataset.tags ? item.dataset.tags.split(",") : [];
+                // Check intersection: All selected tags must be present in itemTags
+                const hasAllTags = Array.from(selectedTags).every((t) => itemTags.includes(t));
+
+                if (hasAllTags) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
             }
         });
 
         // Update active state
         document.querySelectorAll('button[onclick^="filterByTag"]').forEach((btn) => {
-            if (btn.getAttribute("data-tag") === tagId.toString()) {
+            const btnTag = btn.getAttribute("data-tag");
+            if (selectedTags.has(btnTag)) {
                 btn.classList.add("ring-2", "ring-offset-2", "ring-blue-500");
             } else {
                 btn.classList.remove("ring-2", "ring-offset-2", "ring-blue-500");

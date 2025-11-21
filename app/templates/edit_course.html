@@ -64,6 +64,85 @@
         </div>
 
         <div class="mb-4">
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="tags"> Tags (Max 12 total) </label>
+
+            <div
+                id="tag-input-container"
+                class="flex flex-wrap items-center gap-2 shadow appearance-none border dark:border-gray-600 rounded w-full py-2 px-3 bg-white dark:bg-gray-700 focus-within:ring-2 focus-within:ring-blue-500 transition-shadow cursor-text"
+                onclick="document.getElementById('tag-input').focus()"
+            >
+                <!-- Tags will be inserted here -->
+                <input id="tag-input" type="text" class="flex-grow bg-transparent outline-none text-gray-700 dark:text-gray-200 min-w-[80px] text-sm" placeholder="Add a tag..." />
+            </div>
+
+            <input type="hidden" name="tags" id="hidden-tags-input" value="{{ course.user_tags|map(attribute='name')|join(',') }}" />
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Press Enter or Comma to add a tag. Backspace to remove.</p>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const container = document.getElementById("tag-input-container");
+                const input = document.getElementById("tag-input");
+                const hiddenInput = document.getElementById("hidden-tags-input");
+
+                let tags = hiddenInput.value
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter((t) => t);
+
+                function renderTags() {
+                    // Remove existing tag elements (keep input)
+                    const existingTags = container.querySelectorAll(".tag-capsule");
+                    existingTags.forEach((el) => el.remove());
+
+                    // Insert tags before input
+                    tags.forEach((tag, index) => {
+                        const tagEl = document.createElement("div");
+                        tagEl.className = "tag-capsule flex items-center gap-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-md text-sm font-medium";
+                        tagEl.innerHTML = `
+                            <span>${tag}</span>
+                            <button type="button" class="hover:text-blue-600 dark:hover:text-blue-100 focus:outline-none" onclick="removeTag(${index})">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        `;
+                        container.insertBefore(tagEl, input);
+                    });
+
+                    hiddenInput.value = tags.join(",");
+                }
+
+                window.removeTag = function (index) {
+                    tags.splice(index, 1);
+                    renderTags();
+                };
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter" || e.key === ",") {
+                        e.preventDefault();
+                        const val = input.value.trim().replace(",", "");
+                        if (val && !tags.includes(val)) {
+                            if (tags.length >= 12) {
+                                alert("Tag limit reached (12)");
+                                return;
+                            }
+                            tags.push(val);
+                            input.value = "";
+                            renderTags();
+                        } else if (tags.includes(val)) {
+                            input.value = ""; // Clear duplicate
+                        }
+                    } else if (e.key === "Backspace" && !input.value && tags.length > 0) {
+                        tags.pop();
+                        renderTags();
+                    }
+                });
+
+                // Initial render
+                renderTags();
+            });
+        </script>
+
+        <div class="mb-4">
             <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="display_order"> Display Order (Lower numbers first) </label>
             <input
                 class="shadow appearance-none border dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"

@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import render_template, redirect, url_for, session, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from google_auth_oauthlib.flow import Flow
@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import google.auth.transport.requests
 from app import app, db, login
-from app.models import User, Course, CourseTag, ItemTag
+from app.models import User, Course, CourseTag, ItemTag, MutedItem, UserTag
 
 # Helper for file icons
 def get_file_icon(mime_type, title=None):
@@ -62,6 +62,75 @@ def index():
             classroom_service = build('classroom', 'v1', credentials=credentials)
             results = classroom_service.courses().list(studentId='me').execute()
             google_courses = results.get('courses', [])
+
+            # Check for new assignments (last 24 hours)
+            try:
+                current_time = datetime.utcnow()
+                yesterday = current_time - timedelta(days=1)
+                
+                # Initialize seen list in session if not present
+                if 'seen_assignments' not in session:
+                    session['seen_assignments'] = []
+                
+                # Use a set for faster lookups and to avoid duplicates in session
+                seen_ids = set(session['seen_assignments'])
+                new_seen_ids = set()
+
+                def check_new_assignments_callback(request_id, response, exception):
+                    if exception:
+                        print(f"Error checking assignments for {request_id}: {exception}")
+                    else:
+                        course_work = response.get('courseWork', [])
+                        for work in course_work:
+                            if work.get('workType') == 'ASSIGNMENT':
+                                creation_time_str = work.get('creationTime')
+                                if creation_time_str:
+                                    try:
+                                        creation_time_str = creation_time_str.replace('Z', '')
+                                        if '.' in creation_time_str:
+                                            creation_time_str = creation_time_str.split('.')[0]
+                                        
+                                        creation_dt = datetime.fromisoformat(creation_time_str)
+                                        
+                                        if creation_dt > yesterday:
+                                            work_id = work.get('id')
+                                            # Only notify if we haven't seen this assignment in this session
+                                            if work_id not in seen_ids:
+                                                course_name = "Class"
+                                                for c in google_courses:
+                                                    if c['id'] == request_id:
+                                                        course_name = c.get('name')
+                                                        break
+                                                
+                                                flash({
+                                                    'text': f"New Assignment: {work.get('title')} in {course_name}",
+                                                    'url': url_for('course_stream', course_id=request_id)
+                                                }, 'info')
+                                                
+                                                new_seen_ids.add(work_id)
+                                    except ValueError:
+                                        pass
+
+                batch = classroom_service.new_batch_http_request(callback=check_new_assignments_callback)
+                for course in google_courses:
+                    if course.get('courseState') == 'ACTIVE':
+                        batch.add(classroom_service.courses().courseWork().list(
+                            courseId=course['id'], 
+                            orderBy='updateTime desc', 
+                            pageSize=5
+                        ), request_id=course['id'])
+                
+                if google_courses:
+                    batch.execute()
+                    
+                # Update session with new seen IDs
+                if new_seen_ids:
+                    seen_ids.update(new_seen_ids)
+                    session['seen_assignments'] = list(seen_ids)
+                    session.modified = True
+                    
+            except Exception as e:
+                print(f"Error checking new assignments: {e}")
             
             # Merge with local data
             for g_course in google_courses:
@@ -90,6 +159,9 @@ def index():
                     display_course['custom_teacher_name'] = local_course.custom_teacher_name
                     display_course['cached_teacher_name'] = local_course.cached_teacher_name
                     display_course['display_order'] = local_course.display_order
+                    display_course['tags'] = local_course.user_tags
+                else:
+                    display_course['tags'] = []
                 
                 # Fetch teacher name if missing
                 if not display_course.get('custom_teacher_name') and not display_course.get('cached_teacher_name'):
@@ -138,8 +210,11 @@ def index():
             
     # Sort courses by display_order
     courses.sort(key=lambda x: x.get('display_order', 0))
+    
+    # Get user tags for filtering
+    user_tags = UserTag.query.filter_by(user_id=current_user.id).all()
             
-    return render_template('index.html', title='Home', courses=courses)
+    return render_template('index.html', title='Home', courses=courses, user_tags=user_tags)
 
 @app.route('/archived')
 @login_required
@@ -248,6 +323,10 @@ def missing_assignments():
         # 4. Process Data
         now = datetime.utcnow()
         
+        # Fetch muted items
+        muted_items = MutedItem.query.filter_by(user_id=current_user.id).all()
+        muted_ids = {item.google_item_id for item in muted_items}
+        
         for course in courses:
             c_id = course['id']
             course_work = all_course_work.get(c_id, [])
@@ -261,7 +340,12 @@ def missing_assignments():
             
             for work in course_work:
                 if work['id'] in submission_map:
-                    # It is not turned in. Check due date.
+                    # It is not turned in.
+                    assignment = work.copy()
+                    assignment['courseName'] = course['name']
+                    assignment['isMissing'] = False
+                    assignment['isMuted'] = work['id'] in muted_ids
+                    
                     if 'dueDate' in work:
                         # Parse due date
                         due = work['dueDate'] # {year, month, day}
@@ -269,18 +353,27 @@ def missing_assignments():
                         
                         try:
                             due_dt = datetime(due['year'], due['month'], due['day'], time.get('hours', 0), time.get('minutes', 0))
+                            assignment['dueDate'] = due_dt.strftime('%Y-%m-%d %H:%M')
                             
                             if due_dt < now:
-                                # It is missing!
-                                assignment = work.copy()
-                                assignment['courseName'] = course['name']
-                                assignment['dueDate'] = due_dt.strftime('%Y-%m-%d %H:%M')
-                                assignments.append(assignment)
+                                assignment['isMissing'] = True
                         except ValueError:
-                            continue
+                            assignment['dueDate'] = None
+                    else:
+                        assignment['dueDate'] = None
+                        
+                    assignments.append(assignment)
 
     except Exception as e:
         flash(f'Error fetching missing assignments: {str(e)}', 'error')
+    
+    # Sort: Missing first, then by due date
+    def sort_key(a):
+        is_missing = 0 if a.get('isMissing') else 1
+        due = a.get('dueDate') or '9999-99-99'
+        return (is_missing, due)
+        
+    assignments.sort(key=sort_key)
     
     return render_template('missing_assignments.html', title='Missing Assignments', assignments=assignments)
 
@@ -306,7 +399,36 @@ def edit_course(course_id):
             
         course.is_archived = 'is_archived' in request.form
         
+        # Handle Tags
+        tag_names = request.form.get('tags', '').split(',')
+        tag_names = [t.strip() for t in tag_names if t.strip()]
+        
+        # Clear existing tags
+        course.user_tags = []
+        
+        for name in tag_names:
+            # Check if tag exists for user
+            tag = UserTag.query.filter_by(user_id=current_user.id, name=name).first()
+            if not tag:
+                # Check limit of 12 tags per user
+                if UserTag.query.filter_by(user_id=current_user.id).count() >= 12:
+                    flash(f'Tag limit reached (12). Could not create tag "{name}".', 'warning')
+                    continue
+                tag = UserTag(user_id=current_user.id, name=name)
+                db.session.add(tag)
+            
+            if tag not in course.user_tags:
+                course.user_tags.append(tag)
+        
         db.session.commit()
+        
+        # Cleanup unused tags
+        user_tags = UserTag.query.filter_by(user_id=current_user.id).all()
+        for tag in user_tags:
+            if not tag.courses:
+                db.session.delete(tag)
+        db.session.commit()
+        
         flash('Course updated successfully!', 'success')
         return redirect(url_for('index'))
         
@@ -384,6 +506,25 @@ def toggle_item_tag(course_id, item_id):
     db.session.commit()
     
     return redirect(url_for('course_stream', course_id=course_id))
+
+@app.route('/mute_assignment/<item_id>', methods=['POST'])
+@login_required
+def toggle_mute_assignment(item_id):
+    muted = MutedItem.query.filter_by(user_id=current_user.id, google_item_id=item_id).first()
+    if muted:
+        db.session.delete(muted)
+        status = 'unmuted'
+    else:
+        muted = MutedItem(user_id=current_user.id, google_item_id=item_id)
+        db.session.add(muted)
+        status = 'muted'
+    db.session.commit()
+    
+    # Return JSON if AJAX, else redirect
+    if request.is_json:
+        return {'status': status}
+    
+    return redirect(url_for('missing_assignments'))
 
 @app.route('/course/<course_id>')
 @login_required

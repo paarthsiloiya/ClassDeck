@@ -13,6 +13,35 @@
             };
         </script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+            /* Modern Scrollbar */
+            .modern-scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+            }
+            .modern-scrollbar::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+            .modern-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .modern-scrollbar::-webkit-scrollbar-thumb {
+                background-color: rgba(156, 163, 175, 0.5);
+                border-radius: 20px;
+                border: 2px solid transparent;
+                background-clip: content-box;
+            }
+            .modern-scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(107, 114, 128, 0.8);
+            }
+            .dark .modern-scrollbar::-webkit-scrollbar-thumb {
+                background-color: rgba(75, 85, 99, 0.5);
+            }
+            .dark .modern-scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(107, 114, 128, 0.8);
+            }
+        </style>
     </head>
     <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
         <div class="flex h-screen overflow-hidden">
@@ -85,7 +114,11 @@
 
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6">
                     {% if request.endpoint != 'index' %} {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded {{ 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100' if category == 'success' else 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100' }}">{{ message }}</div>
+                    <div class="mb-4 p-4 rounded {{ 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100' if category == 'success' else 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100' }}">
+                        {% if message is mapping %} {{ message.text }} {% if message.url %}
+                        <a href="{{ message.url }}" class="underline ml-2 font-bold">View</a>
+                        {% endif %} {% else %} {{ message }} {% endif %}
+                    </div>
                     {% endfor %} {% endif %} {% endwith %} {% endif %} {% block content %}{% endblock %}
                 </main>
             </div>
