@@ -7,29 +7,122 @@
         <title>ClassDeck</title>
         {% endif %}
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+            };
+        </script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </head>
-    <body class="bg-gray-100">
-        <nav class="bg-white shadow-lg p-4 mb-4">
-            <div class="container mx-auto flex justify-between items-center">
-                <a href="{{ url_for('index') }}" class="text-xl font-bold text-blue-600">ClassDeck</a>
-                <div>
-                    {% if current_user.is_authenticated %}
-                    <div class="flex items-center gap-4">
-                        <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full" />
-                        <span class="text-gray-700 hidden md:inline">{{ current_user.name }}</span>
-                        <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm">Logout</a>
+    <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="bg-white dark:bg-gray-800 shadow-lg w-64 flex-shrink-0 flex flex-col transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:relative z-30 h-full">
+                <div class="p-4 flex items-center justify-between border-b dark:border-gray-700">
+                    <a href="{{ url_for('index') }}" class="text-xl font-bold text-blue-600 dark:text-blue-400">ClassDeck</a>
+                    <button id="closeSidebar" class="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <nav class="flex-1 overflow-y-auto py-4">
+                    <ul class="space-y-2 px-2">
+                        <li>
+                            <a href="{{ url_for('index') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'index' else '' }}">
+                                <i class="fas fa-home w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
+                                <span class="ml-3">Main View</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('archived_courses') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'archived_courses' else '' }}">
+                                <i class="fas fa-archive w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
+                                <span class="ml-3">Archived Classes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('missing_assignments') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'missing_assignments' else '' }}">
+                                <i class="fas fa-clipboard-list w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
+                                <span class="ml-3">Missing Assignments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="p-4 border-t dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-medium">Theme</span>
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-moon dark:hidden text-gray-600"></i>
+                            <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                        </button>
                     </div>
+                    {% if current_user.is_authenticated %}
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full" />
+                        <div class="overflow-hidden">
+                            <p class="text-sm font-medium truncate">{{ current_user.name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="block w-full text-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm transition-colors">Logout</a>
                     {% else %}
-                    <a href="{{ url_for('login') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm">Login with Google</a>
+                    <a href="{{ url_for('login') }}" class="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm transition-colors">Login with Google</a>
                     {% endif %}
                 </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col h-screen overflow-hidden">
+                <!-- Mobile Header -->
+                <header class="md:hidden bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between z-20">
+                    <button id="openSidebar" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <span class="text-lg font-bold text-blue-600 dark:text-blue-400">ClassDeck</span>
+                    <div class="w-6"></div>
+                    <!-- Spacer -->
+                </header>
+
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6">
+                    {% if request.endpoint != 'index' %} {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded {{ 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100' if category == 'success' else 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100' }}">{{ message }}</div>
+                    {% endfor %} {% endif %} {% endwith %} {% endif %} {% block content %}{% endblock %}
+                </main>
             </div>
-        </nav>
-        <div class="container mx-auto p-4">
-            {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
-            <div class="mb-4 p-4 rounded {{ 'bg-green-100 text-green-700' if category == 'success' else 'bg-blue-100 text-blue-700' }}">{{ message }}</div>
-            {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
         </div>
+
+        <script>
+            // Sidebar Toggle
+            const sidebar = document.getElementById("sidebar");
+            const openSidebarBtn = document.getElementById("openSidebar");
+            const closeSidebarBtn = document.getElementById("closeSidebar");
+
+            function toggleSidebar() {
+                sidebar.classList.toggle("-translate-x-full");
+            }
+
+            if (openSidebarBtn) openSidebarBtn.addEventListener("click", toggleSidebar);
+            if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", toggleSidebar);
+
+            // Theme Toggle
+            const themeToggle = document.getElementById("themeToggle");
+            const html = document.documentElement;
+
+            // Check local storage
+            if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+                html.classList.add("dark");
+            } else {
+                html.classList.remove("dark");
+            }
+
+            themeToggle.addEventListener("click", () => {
+                html.classList.toggle("dark");
+                if (html.classList.contains("dark")) {
+                    localStorage.theme = "dark";
+                } else {
+                    localStorage.theme = "light";
+                }
+            });
+        </script>
     </body>
 </html>

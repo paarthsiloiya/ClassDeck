@@ -1,37 +1,250 @@
 {% extends "base.html" %} {% block content %}
-<div class="bg-white p-6 rounded-lg shadow-md mb-6">
-    <h1 class="text-3xl font-bold mb-4">Welcome to ClassDeck</h1>
-    <p class="text-gray-700 mb-4">Your personal Google Classroom dashboard.</p>
-    {% if not current_user.is_authenticated %}
-    <p class="text-sm text-gray-500">Please login to view your classes.</p>
-    {% endif %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white">{{ title }}</h1>
+
+    <div class="flex items-center gap-3">
+        {% if courses %}
+        <div class="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
+            <button onclick="setView('grid')" id="gridViewBtn" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button onclick="setView('list')" id="listViewBtn" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+        {% endif %}
+
+        <!-- Notification Center -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        <div class="relative">
+            <button onclick="toggleNotifications()" class="bg-white dark:bg-gray-800 p-2.5 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 relative transition-colors">
+                <i class="fas fa-bell text-lg"></i>
+                {% if messages %}
+                <span id="notificationBadge" class="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+                {% endif %}
+            </button>
+
+            <!-- Dropdown -->
+            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 border dark:border-gray-700 overflow-hidden ring-1 ring-black ring-opacity-5">
+                <div class="p-3 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Notifications</h3>
+                    {% if messages %}
+                    <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">{{ messages|length }} New</span>
+                    {% endif %}
+                </div>
+                <div class="max-h-96 overflow-y-auto">
+                    {% if messages %} {% for category, message in messages %}
+                    <div class="p-4 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0">
+                                {% if category == 'success' %}
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                {% elif category == 'error' %}
+                                <i class="fas fa-exclamation-circle text-red-500 mt-1"></i>
+                                {% else %}
+                                <i class="fas fa-info-circle text-blue-500 mt-1"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-800 dark:text-gray-200">{{ message }}</p>
+                                <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 block">Just now</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %} {% else %}
+                    <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-bell-slash text-2xl mb-2 opacity-50"></i>
+                        <p class="text-sm">No new notifications</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+    </div>
 </div>
 
-{% if courses %}
-<h2 class="text-2xl font-bold mb-4 text-gray-800">Your Classes</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+{% if not current_user.is_authenticated %}
+<div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">Welcome to ClassDeck</h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">Your personal Google Classroom dashboard. Manage your classes, view streams, and track assignments all in one place.</p>
+    <a href="{{ url_for('login') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"> Login with Google </a>
+</div>
+{% endif %} {% if courses %}
+<!-- Grid View Container -->
+<div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for course in courses %}
-    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div class="h-32 bg-blue-600 relative" {% if course.custom_banner %}style="background-image: url('{{ course.custom_banner }}'); background-size: cover; background-position: center;" {% endif %}>
-            <a href="{{ url_for('course_stream', course_id=course.id) }}" class="absolute inset-0"></a>
-            <div class="absolute bottom-0 left-0 p-4 text-white w-full bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
-                <h2 class="text-xl font-bold truncate">{{ course.name }}</h2>
-                <p class="text-sm opacity-90 truncate">{{ course.section }}</p>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full group relative">
+        <!-- Card Header / Banner -->
+        <div class="h-32 bg-blue-600 relative flex-shrink-0" {% if course.custom_banner %}style="background-image: url('{{ course.custom_banner }}'); background-size: cover; background-position: center;" {% endif %}>
+            <a href="{{ url_for('course_stream', course_id=course.id) }}" class="absolute inset-0 z-0"></a>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"></div>
+
+            <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                <a href="{{ course.alternateLink }}" target="_blank" class="bg-white/20 hover:bg-white/40 p-1.5 rounded text-white backdrop-blur-sm" title="Open in Google Classroom">
+                    <i class="fas fa-external-link-alt text-sm"></i>
+                </a>
+                <a href="{{ url_for('edit_course', course_id=course.id) }}" class="bg-white/20 hover:bg-white/40 p-1.5 rounded text-white backdrop-blur-sm" title="Edit Course Settings">
+                    <i class="fas fa-cog text-sm"></i>
+                </a>
             </div>
-            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="absolute top-2 right-2 bg-white/20 hover:bg-white/40 p-1 rounded text-white z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                </svg>
-            </a>
+
+            <div class="absolute bottom-0 left-0 p-4 text-white w-full pointer-events-none">
+                <h2 class="text-xl font-bold truncate leading-tight">{{ course.name }}</h2>
+                <p class="text-sm opacity-90 truncate mt-1">{{ course.section }}</p>
+            </div>
         </div>
-        <div class="p-4">
-            <p class="text-gray-600 text-sm mb-2 truncate">{{ course.descriptionHeading }}</p>
-            <div class="flex justify-between items-center mt-4">
-                <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">{{ course.courseState }}</span>
-                <a href="{{ url_for('course_stream', course_id=course.id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Stream</a>
+
+        <!-- Card Body -->
+        <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+                {% if course.teacher_name %}
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                    <i class="fas fa-chalkboard-teacher w-5 text-center mr-2"></i>
+                    {{ course.teacher_name }}
+                </p>
+                {% endif %} {% if course.descriptionHeading %}
+                <p class="text-xs text-gray-500 dark:text-gray-500 line-clamp-2 mb-3">{{ course.descriptionHeading }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mt-4 pt-3 border-t dark:border-gray-700 flex justify-between items-center">
+                <a href="{{ url_for('course_stream', course_id=course.id) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium flex items-center"> View Stream <i class="fas fa-arrow-right ml-1 text-xs"></i> </a>
+                {% if course.enrollmentCode %}
+                <span class="text-xs text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded select-all" title="Class Code">{{ course.enrollmentCode }}</span>
+                {% endif %}
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
-{% endif %} {% endblock %}
+
+<!-- List View Container -->
+<div id="coursesList" class="flex flex-col gap-2 hidden">
+    {% for course in courses %}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-3 flex items-center gap-4 group border border-transparent hover:border-gray-200 dark:hover:border-gray-700">
+        <!-- Icon (Small Banner or Color) -->
+        <a
+            href="{{ url_for('course_stream', course_id=course.id) }}"
+            class="w-10 h-10 rounded-full flex-shrink-0 bg-blue-600 flex items-center justify-center text-white font-bold text-lg overflow-hidden"
+            {%
+            if
+            course.custom_banner
+            %}style="background-image: url('{{ course.custom_banner }}'); background-size: cover; background-position: center;"
+            {%
+            endif
+            %}
+        >
+            {% if not course.custom_banner %}{{ course.name[:1] }}{% endif %}
+        </a>
+
+        <!-- Name & Section -->
+        <div class="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <div class="min-w-0">
+                <a href="{{ url_for('course_stream', course_id=course.id) }}" class="text-sm font-bold text-gray-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 block">{{ course.name }}</a>
+                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ course.section }}</p>
+            </div>
+
+            <!-- Teacher -->
+            <div class="hidden md:block min-w-0">
+                <p class="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center">
+                    <i class="fas fa-chalkboard-teacher mr-2 w-4 text-center"></i>
+                    {{ course.teacher_name }}
+                </p>
+            </div>
+
+            <!-- Code -->
+            <div class="hidden md:block min-w-0">
+                {% if course.enrollmentCode %}
+                <span class="text-xs text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded select-all" title="Class Code">{{ course.enrollmentCode }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <a href="{{ course.alternateLink }}" target="_blank" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-2" title="Open in Google Classroom">
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2" title="Edit Course Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif current_user.is_authenticated %}
+<div class="text-center py-12">
+    <div class="text-gray-400 mb-4">
+        <i class="fas fa-folder-open text-6xl"></i>
+    </div>
+    <h3 class="text-xl font-medium text-gray-600 dark:text-gray-400">No classes found</h3>
+    <p class="text-gray-500 dark:text-gray-500 mt-2">You don't have any classes in this view.</p>
+</div>
+{% endif %}
+
+<script>
+    function setView(view) {
+        const gridContainer = document.getElementById("coursesGrid");
+        const listContainer = document.getElementById("coursesList");
+        const gridBtn = document.getElementById("gridViewBtn");
+        const listBtn = document.getElementById("listViewBtn");
+
+        if (!gridContainer || !listContainer) return;
+
+        if (view === "list") {
+            gridContainer.classList.add("hidden");
+            listContainer.classList.remove("hidden");
+
+            // Update buttons
+            listBtn.classList.add("text-blue-600", "dark:text-blue-400");
+            listBtn.classList.remove("text-gray-500", "dark:text-gray-400");
+            gridBtn.classList.remove("text-blue-600", "dark:text-blue-400");
+            gridBtn.classList.add("text-gray-500", "dark:text-gray-400");
+
+            localStorage.setItem("viewMode", "list");
+        } else {
+            gridContainer.classList.remove("hidden");
+            listContainer.classList.add("hidden");
+
+            // Update buttons
+            gridBtn.classList.add("text-blue-600", "dark:text-blue-400");
+            gridBtn.classList.remove("text-gray-500", "dark:text-gray-400");
+            listBtn.classList.remove("text-blue-600", "dark:text-blue-400");
+            listBtn.classList.add("text-gray-500", "dark:text-gray-400");
+
+            localStorage.setItem("viewMode", "grid");
+        }
+    }
+
+    // Initialize view from local storage
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedView = localStorage.getItem("viewMode") || "grid";
+        setView(savedView);
+    });
+
+    // Close notification dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("notificationDropdown");
+        if (dropdown && !dropdown.classList.contains("hidden")) {
+            const bellContainer = dropdown.parentElement;
+            if (!bellContainer.contains(event.target)) {
+                dropdown.classList.add("hidden");
+            }
+        }
+    });
+
+    function toggleNotifications() {
+        const dropdown = document.getElementById("notificationDropdown");
+        dropdown.classList.toggle("hidden");
+
+        const badge = document.getElementById("notificationBadge");
+        if (badge) {
+            badge.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Missing Assignments</h1>
+
+    <div class="flex items-center gap-4">
+        <!-- Sort Dropdown -->
+        <select id="sortSelect" onchange="sortAssignments()" class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded px-3 py-2 text-sm">
+            <option value="due_asc">Due Date (Earliest First)</option>
+            <option value="due_desc">Due Date (Latest First)</option>
+            <option value="course">Course Name</option>
+        </select>
+    </div>
+</div>
+
+{% if assignments %}
+<div class="space-y-4" id="assignmentsContainer">
+    {% for assignment in assignments %}
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow assignment-card" data-due="{{ assignment.dueDate or '9999-99-99' }}" data-course="{{ assignment.courseName }}">
+        <div class="flex justify-between items-start">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"> {{ assignment.courseName }} </span>
+                    {% if assignment.dueDate %}
+                    <span class="text-xs font-medium text-red-600 dark:text-red-400 flex items-center"> <i class="fas fa-clock mr-1"></i> Due: {{ assignment.dueDate }} </span>
+                    {% endif %}
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ assignment.title }}</h3>
+                {% if assignment.description %}
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{{ assignment.description }}</p>
+                {% endif %}
+            </div>
+            <a href="{{ assignment.alternateLink }}" target="_blank" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-12">
+    <div class="text-green-500 mb-4">
+        <i class="fas fa-check-circle text-6xl"></i>
+    </div>
+    <h3 class="text-xl font-medium text-gray-600 dark:text-gray-400">All caught up!</h3>
+    <p class="text-gray-500 dark:text-gray-500 mt-2">No missing assignments found.</p>
+</div>
+{% endif %}
+
+<script>
+    function sortAssignments() {
+        const container = document.getElementById("assignmentsContainer");
+        const cards = Array.from(container.getElementsByClassName("assignment-card"));
+        const sortValue = document.getElementById("sortSelect").value;
+
+        cards.sort((a, b) => {
+            if (sortValue === "due_asc") {
+                return a.dataset.due.localeCompare(b.dataset.due);
+            } else if (sortValue === "due_desc") {
+                return b.dataset.due.localeCompare(a.dataset.due);
+            } else if (sortValue === "course") {
+                return a.dataset.course.localeCompare(b.dataset.course);
+            }
+        });
+
+        cards.forEach((card) => container.appendChild(card));
+    }
+</script>
+{% endblock %}

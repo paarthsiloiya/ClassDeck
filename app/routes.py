@@ -71,6 +71,10 @@ def index():
                 display_course = g_course.copy()
                 display_course['is_archived'] = False
                 
+                # Determine if archived (Google state or Local override)
+                if g_course.get('courseState') == 'ARCHIVED':
+                    display_course['is_archived'] = True
+                
                 if local_course:
                     if local_course.custom_name:
                         display_course['name'] = local_course.custom_name
@@ -83,7 +87,47 @@ def index():
                     # Add other custom fields if needed for template
                     display_course['custom_banner'] = local_course.custom_banner
                     display_course['custom_icon'] = local_course.custom_icon
+                    display_course['custom_teacher_name'] = local_course.custom_teacher_name
+                    display_course['cached_teacher_name'] = local_course.cached_teacher_name
+                    display_course['display_order'] = local_course.display_order
                 
+                # Fetch teacher name if missing
+                if not display_course.get('custom_teacher_name') and not display_course.get('cached_teacher_name'):
+                    try:
+                        # We need to fetch the teacher profile. 
+                        # Note: This can be slow for many courses. Ideally, do this asynchronously or in batch.
+                        # For now, we'll do it on demand and cache it.
+                        owner_id = g_course.get('ownerId')
+                        if owner_id:
+                            user_profile = classroom_service.userProfiles().get(userId=owner_id).execute()
+                            teacher_name = user_profile.get('name', {}).get('fullName')
+                            
+                            if not local_course:
+                                local_course = Course(user_id=current_user.id, google_course_id=g_course['id'])
+                                db.session.add(local_course)
+                            
+                            local_course.cached_teacher_name = teacher_name
+                            db.session.commit()
+                            display_course['cached_teacher_name'] = teacher_name
+                    except HttpError as e:
+                        if e.resp.status == 403:
+                             # Check for missing scopes
+                            required_scopes = set(app.config['GOOGLE_SCOPES'])
+                            current_scopes = set(current_user.scopes.split(',')) if current_user.scopes else set()
+                            
+                            missing_scopes = required_scopes - current_scopes
+                            if missing_scopes:
+                                print(f"Missing scopes for teacher fetch: {missing_scopes}")
+                                logout_user()
+                                flash('New permissions are required to view teacher names. Please log in again.', 'info')
+                                return redirect(url_for('login'))
+                        print(f"Error fetching teacher for {g_course['id']}: {e}")
+                    except Exception as e:
+                        print(f"Error fetching teacher for {g_course['id']}: {e}")
+
+                # Final Teacher Name Logic
+                display_course['teacher_name'] = display_course.get('custom_teacher_name') or display_course.get('cached_teacher_name') or 'Unknown Teacher'
+
                 if not display_course['is_archived']:
                     courses.append(display_course)
                     
@@ -92,7 +136,153 @@ def index():
             flash(f'Error fetching courses: {str(e)}', 'error')
             # Optionally force re-login if token is invalid
             
+    # Sort courses by display_order
+    courses.sort(key=lambda x: x.get('display_order', 0))
+            
     return render_template('index.html', title='Home', courses=courses)
+
+@app.route('/archived')
+@login_required
+def archived_courses():
+    courses = []
+    # Build credentials from stored user data
+    credentials = Credentials(
+        token=current_user.access_token,
+        refresh_token=current_user.refresh_token,
+        token_uri=current_user.token_uri,
+        client_id=current_user.client_id,
+        client_secret=current_user.client_secret,
+        scopes=current_user.scopes.split(',') if current_user.scopes else []
+    )
+
+    try:
+        # Get courses
+        classroom_service = build('classroom', 'v1', credentials=credentials)
+        results = classroom_service.courses().list(studentId='me').execute()
+        google_courses = results.get('courses', [])
+        
+        # Merge with local data
+        for g_course in google_courses:
+            local_course = Course.query.filter_by(user_id=current_user.id, google_course_id=g_course['id']).first()
+            
+            display_course = g_course.copy()
+            display_course['is_archived'] = False
+            
+            if g_course.get('courseState') == 'ARCHIVED':
+                display_course['is_archived'] = True
+            
+            if local_course:
+                if local_course.custom_name: display_course['name'] = local_course.custom_name
+                if local_course.custom_section: display_course['section'] = local_course.custom_section
+                if local_course.custom_banner: display_course['custom_banner'] = local_course.custom_banner
+                if local_course.is_archived: display_course['is_archived'] = True
+                display_course['teacher_name'] = local_course.custom_teacher_name or local_course.cached_teacher_name
+            
+            if display_course['is_archived']:
+                courses.append(display_course)
+                
+    except Exception as e:
+        flash(f'Error fetching archived courses: {str(e)}', 'error')
+        
+    return render_template('index.html', title='Archived Classes', courses=courses, is_archived_view=True)
+
+@app.route('/missing')
+@login_required
+def missing_assignments():
+    assignments = []
+    
+    # Build credentials
+    credentials = Credentials(
+        token=current_user.access_token,
+        refresh_token=current_user.refresh_token,
+        token_uri=current_user.token_uri,
+        client_id=current_user.client_id,
+        client_secret=current_user.client_secret,
+        scopes=current_user.scopes.split(',') if current_user.scopes else []
+    )
+    
+    try:
+        service = build('classroom', 'v1', credentials=credentials)
+        
+        # 1. Get all active courses
+        results = service.courses().list(studentId='me', courseStates=['ACTIVE']).execute()
+        courses = results.get('courses', [])
+        
+        if not courses:
+             return render_template('missing_assignments.html', title='Missing Assignments', assignments=[])
+
+        # Prepare data structures for batch results
+        all_course_work = {} # course_id -> [work]
+        all_submissions = {} # course_id -> [submission]
+        
+        # Callbacks
+        def cw_callback(request_id, response, exception):
+            if exception:
+                print(f"Error fetching coursework for {request_id}: {exception}")
+            else:
+                all_course_work[request_id] = response.get('courseWork', [])
+
+        def sub_callback(request_id, response, exception):
+            if exception:
+                print(f"Error fetching submissions for {request_id}: {exception}")
+            else:
+                all_submissions[request_id] = response.get('studentSubmissions', [])
+
+        # 2. Batch fetch CourseWork
+        batch_cw = service.new_batch_http_request(callback=cw_callback)
+        for course in courses:
+            batch_cw.add(service.courses().courseWork().list(courseId=course['id']), request_id=course['id'])
+        batch_cw.execute()
+        
+        # 3. Batch fetch Submissions
+        batch_sub = service.new_batch_http_request(callback=sub_callback)
+        for course in courses:
+            batch_sub.add(service.courses().courseWork().studentSubmissions().list(
+                courseId=course['id'],
+                courseWorkId='-',
+                userId='me',
+                states=['CREATED', 'RECLAIMED_BY_STUDENT']
+            ), request_id=course['id'])
+        batch_sub.execute()
+
+        # 4. Process Data
+        now = datetime.utcnow()
+        
+        for course in courses:
+            c_id = course['id']
+            course_work = all_course_work.get(c_id, [])
+            submissions = all_submissions.get(c_id, [])
+            
+            if not course_work:
+                continue
+                
+            # Map submissions to coursework ID
+            submission_map = {s['courseWorkId']: s for s in submissions}
+            
+            for work in course_work:
+                if work['id'] in submission_map:
+                    # It is not turned in. Check due date.
+                    if 'dueDate' in work:
+                        # Parse due date
+                        due = work['dueDate'] # {year, month, day}
+                        time = work.get('dueTime', {'hours': 23, 'minutes': 59})
+                        
+                        try:
+                            due_dt = datetime(due['year'], due['month'], due['day'], time.get('hours', 0), time.get('minutes', 0))
+                            
+                            if due_dt < now:
+                                # It is missing!
+                                assignment = work.copy()
+                                assignment['courseName'] = course['name']
+                                assignment['dueDate'] = due_dt.strftime('%Y-%m-%d %H:%M')
+                                assignments.append(assignment)
+                        except ValueError:
+                            continue
+
+    except Exception as e:
+        flash(f'Error fetching missing assignments: {str(e)}', 'error')
+    
+    return render_template('missing_assignments.html', title='Missing Assignments', assignments=assignments)
 
 @app.route('/course/<course_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -108,6 +298,12 @@ def edit_course(course_id):
         course.custom_section = request.form.get('custom_section')
         course.custom_code = request.form.get('custom_code')
         course.custom_banner = request.form.get('custom_banner')
+        course.custom_teacher_name = request.form.get('custom_teacher_name')
+        try:
+            course.display_order = int(request.form.get('display_order', 0))
+        except ValueError:
+            course.display_order = 0
+            
         course.is_archived = 'is_archived' in request.form
         
         db.session.commit()
@@ -230,6 +426,7 @@ def course_stream(course_id):
         if local_course.custom_name: course['name'] = local_course.custom_name
         if local_course.custom_section: course['section'] = local_course.custom_section
         if local_course.custom_banner: course['custom_banner'] = local_course.custom_banner
+        if local_course.custom_code: course['enrollmentCode'] = local_course.custom_code
         
         tags = local_course.tags
         tag_ids = [t.id for t in tags]

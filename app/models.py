@@ -34,8 +34,13 @@ class Course(db.Model):
     custom_banner = db.Column(db.String(500))
     custom_icon = db.Column(db.String(500))
     
-    is_archived = db.Column(db.Boolean, default=False)
+    # Teacher info
+    cached_teacher_name = db.Column(db.String(100))
+    custom_teacher_name = db.Column(db.String(100))
+    
+    is_archived = db.Column(db.Boolean, default=False) # User archived
     is_pinned = db.Column(db.Boolean, default=False)
+    display_order = db.Column(db.Integer, default=0)
 
     __table_args__ = (db.UniqueConstraint('user_id', 'google_course_id', name='_user_course_uc'),)
 
