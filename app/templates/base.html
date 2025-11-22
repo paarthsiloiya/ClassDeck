@@ -1,27 +1,63 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {% if title %}
         <title>{{ title }} - ClassDeck</title>
         {% else %}
         <title>ClassDeck</title>
         {% endif %}
+        <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/svg+xml" />
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+        <!-- Tailwind -->
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
                 darkMode: "class",
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Inter", "sans-serif"],
+                        },
+                        colors: {
+                            primary: {
+                                50: "#eef2ff",
+                                100: "#e0e7ff",
+                                200: "#c7d2fe",
+                                300: "#a5b4fc",
+                                400: "#818cf8",
+                                500: "#6366f1",
+                                600: "#4f46e5",
+                                700: "#4338ca",
+                                800: "#3730a3",
+                                900: "#312e81",
+                            },
+                        },
+                    },
+                },
             };
         </script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
         <style>
+            body {
+                font-family: "Inter", sans-serif;
+            }
+
             /* Modern Scrollbar */
             .modern-scrollbar {
                 scrollbar-width: thin;
                 scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
             }
             .modern-scrollbar::-webkit-scrollbar {
-                height: 8px;
-                width: 8px;
+                height: 6px;
+                width: 6px;
             }
             .modern-scrollbar::-webkit-scrollbar-track {
                 background: transparent;
@@ -29,8 +65,6 @@
             .modern-scrollbar::-webkit-scrollbar-thumb {
                 background-color: rgba(156, 163, 175, 0.5);
                 border-radius: 20px;
-                border: 2px solid transparent;
-                background-clip: content-box;
             }
             .modern-scrollbar::-webkit-scrollbar-thumb:hover {
                 background-color: rgba(107, 114, 128, 0.8);
@@ -38,86 +72,134 @@
             .dark .modern-scrollbar::-webkit-scrollbar-thumb {
                 background-color: rgba(75, 85, 99, 0.5);
             }
-            .dark .modern-scrollbar::-webkit-scrollbar-thumb:hover {
-                background-color: rgba(107, 114, 128, 0.8);
+
+            /* Global Theme Transition */
+            body,
+            div,
+            nav,
+            aside,
+            header,
+            main,
+            section,
+            article,
+            footer,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            p,
+            span,
+            a,
+            button,
+            input,
+            select,
+            textarea,
+            label,
+            li,
+            ul,
+            ol,
+            i {
+                transition-property: background-color, border-color, color, fill, stroke;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+                transition-duration: 200ms;
             }
         </style>
     </head>
-    <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar -->
-            <aside id="sidebar" class="bg-white dark:bg-gray-800 shadow-lg w-64 flex-shrink-0 flex flex-col transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:relative z-30 h-full">
-                <div class="p-4 flex items-center justify-between border-b dark:border-gray-700">
-                    <a href="{{ url_for('index') }}" class="text-xl font-bold text-blue-600 dark:text-blue-400">ClassDeck</a>
-                    <button id="closeSidebar" class="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <aside
+                id="sidebar"
+                class="bg-white dark:bg-slate-800 shadow-xl w-72 flex-shrink-0 flex flex-col transition-all duration-300 transform -translate-x-full md:translate-x-0 fixed md:relative z-30 h-full md:h-[calc(100vh-2rem)] md:m-4 md:rounded-2xl border-r md:border-none dark:border-slate-700"
+            >
+                <div class="p-6 flex items-center justify-between">
+                    <a href="{{ url_for('index') }}" class="flex items-center gap-3 text-2xl font-bold text-primary-600 dark:text-primary-400">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="ClassDeck Logo" class="w-8 h-8 drop-shadow-md" />
+                        <span class="tracking-tight">ClassDeck</span>
+                    </a>
+                    <button id="closeSidebar" class="md:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
 
-                <nav class="flex-1 overflow-y-auto py-4">
-                    <ul class="space-y-2 px-2">
-                        <li>
-                            <a href="{{ url_for('index') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'index' else '' }}">
-                                <i class="fas fa-home w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
-                                <span class="ml-3">Main View</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('archived_courses') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'archived_courses' else '' }}">
-                                <i class="fas fa-archive w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
-                                <span class="ml-3">Archived Classes</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('missing_assignments') }}" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group {{ 'bg-blue-50 dark:bg-gray-700' if request.endpoint == 'missing_assignments' else '' }}">
-                                <i class="fas fa-clipboard-list w-6 text-center text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"></i>
-                                <span class="ml-3">Missing Assignments</span>
-                            </a>
-                        </li>
-                    </ul>
+                <nav class="flex-1 overflow-y-auto px-4 py-2 space-y-1">
+                    <a
+                        href="{{ url_for('index') }}"
+                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 shadow-sm' if request.endpoint == 'index' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200' }}"
+                    >
+                        <i class="fas fa-home w-6 text-center {{ 'text-primary-600 dark:text-primary-400' if request.endpoint == 'index' else 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300' }}"></i>
+                        <span class="ml-3 font-medium">Dashboard</span>
+                    </a>
+
+                    <a
+                        href="{{ url_for('archived_courses') }}"
+                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 shadow-sm' if request.endpoint == 'archived_courses' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200' }}"
+                    >
+                        <i class="fas fa-archive w-6 text-center {{ 'text-primary-600 dark:text-primary-400' if request.endpoint == 'archived_courses' else 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300' }}"></i>
+                        <span class="ml-3 font-medium">Archived Classes</span>
+                    </a>
+
+                    <a
+                        href="{{ url_for('missing_assignments') }}"
+                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 shadow-sm' if request.endpoint == 'missing_assignments' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200' }}"
+                    >
+                        <i class="fas fa-clipboard-list w-6 text-center {{ 'text-primary-600 dark:text-primary-400' if request.endpoint == 'missing_assignments' else 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300' }}"></i>
+                        <span class="ml-3 font-medium">Missing Work</span>
+                    </a>
                 </nav>
 
-                <div class="p-4 border-t dark:border-gray-700">
+                <div class="p-4 m-4 bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-100 dark:border-slate-700/50">
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-sm font-medium">Theme</span>
-                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-moon dark:hidden text-gray-600"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Appearance</span>
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-white dark:hover:bg-slate-600 transition-colors shadow-sm">
+                            <i class="fas fa-moon dark:hidden text-slate-600"></i>
                             <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
                         </button>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full" />
+                    <div class="flex items-center gap-3 mb-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <img src="{{ current_user.picture }}" alt="Profile" class="w-10 h-10 rounded-full ring-2 ring-white dark:ring-slate-600 shadow-sm" />
                         <div class="overflow-hidden">
-                            <p class="text-sm font-medium truncate">{{ current_user.name }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ current_user.email }}</p>
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{{ current_user.name }}</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ current_user.email }}</p>
                         </div>
                     </div>
-                    <a href="{{ url_for('logout') }}" class="block w-full text-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm transition-colors">Logout</a>
+                    <a href="{{ url_for('logout') }}" class="block w-full text-center bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/30 dark:text-red-400 font-semibold py-2.5 px-4 rounded-lg text-sm transition-all duration-200">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
                     {% else %}
-                    <a href="{{ url_for('login') }}" class="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm transition-colors">Login with Google</a>
+                    <a href="{{ url_for('login') }}" class="block w-full text-center bg-primary-600 hover:bg-primary-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-primary-500/30"> Login with Google </a>
                     {% endif %}
                 </div>
             </aside>
 
             <!-- Main Content -->
-            <div class="flex-1 flex flex-col h-screen overflow-hidden">
+            <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
                 <!-- Mobile Header -->
-                <header class="md:hidden bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between z-20">
-                    <button id="openSidebar" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                <header class="md:hidden bg-white dark:bg-slate-800 shadow-sm p-4 flex items-center justify-between z-20">
+                    <button id="openSidebar" class="text-slate-500 hover:text-slate-700 dark:text-slate-400">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <span class="text-lg font-bold text-blue-600 dark:text-blue-400">ClassDeck</span>
+                    <div class="flex items-center gap-2">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="ClassDeck Logo" class="w-6 h-6" />
+                        <span class="text-lg font-bold text-primary-600 dark:text-primary-400">ClassDeck</span>
+                    </div>
                     <div class="w-6"></div>
-                    <!-- Spacer -->
                 </header>
 
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4 md:p-6">
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 p-4 md:p-8 scroll-smooth">
                     {% if request.endpoint != 'index' %} {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded {{ 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100' if category == 'success' else 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100' }}">
-                        {% if message is mapping %} {{ message.text }} {% if message.url %}
-                        <a href="{{ message.url }}" class="underline ml-2 font-bold">View</a>
-                        {% endif %} {% else %} {{ message }} {% endif %}
+                    <div
+                        class="mb-6 p-4 rounded-xl shadow-sm border flex items-center gap-3 {{ 'bg-green-50 border-green-100 text-green-700 dark:bg-green-900/20 dark:border-green-900/30 dark:text-green-300' if category == 'success' else 'bg-blue-50 border-blue-100 text-blue-700 dark:bg-blue-900/20 dark:border-blue-900/30 dark:text-blue-300' }}"
+                    >
+                        <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-info-circle' }} text-lg"></i>
+                        <div>
+                            {% if message is mapping %} {{ message.text }} {% if message.url %}
+                            <a href="{{ message.url }}" class="underline ml-2 font-bold hover:text-opacity-80">View</a>
+                            {% endif %} {% else %} {{ message }} {% endif %}
+                        </div>
                     </div>
                     {% endfor %} {% endif %} {% endwith %} {% endif %} {% block content %}{% endblock %}
                 </main>

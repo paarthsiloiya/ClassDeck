@@ -1,73 +1,98 @@
 {% extends "base.html" %} {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Missing Assignments</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Missing Assignments</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Track and manage your overdue work</p>
+        </div>
 
-    <div class="flex items-center gap-4">
-        <!-- Show Muted Toggle -->
-        <label class="flex items-center cursor-pointer">
-            <input type="checkbox" id="showMutedToggle" onchange="toggleMutedVisibility()" class="sr-only peer" />
-            <div
-                class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-            ></div>
-            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Show Muted</span>
-        </label>
+        <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <!-- Show Muted Toggle -->
+            <label class="flex items-center cursor-pointer px-2">
+                <input type="checkbox" id="showMutedToggle" onchange="toggleMutedVisibility()" class="sr-only peer" />
+                <div
+                    class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"
+                ></div>
+                <span class="ms-2 text-sm font-medium text-slate-600 dark:text-slate-300">Show Hidden</span>
+            </label>
 
-        <!-- Sort Dropdown -->
-        <select id="sortSelect" onchange="sortAssignments()" class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded px-3 py-2 text-sm">
-            <option value="due_asc">Due Date (Earliest First)</option>
-            <option value="due_desc">Due Date (Latest First)</option>
-            <option value="course">Course Name</option>
-        </select>
-    </div>
-</div>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
 
-{% if assignments %}
-<div class="space-y-4" id="assignmentsContainer">
-    {% for assignment in assignments %}
-    <div
-        class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow assignment-card {{ 'opacity-50' if assignment.isMuted else '' }} {{ 'hidden' if assignment.isMuted else '' }}"
-        data-due="{{ assignment.dueDate or '9999-99-99' }}"
-        data-course="{{ assignment.courseName }}"
-        data-muted="{{ 'true' if assignment.isMuted else 'false' }}"
-    >
-        <div class="flex justify-between items-start">
-            <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"> {{ assignment.courseName }} </span>
-                    {% if assignment.isMissing %}
-                    <span class="text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">MISSING</span>
-                    {% endif %} {% if assignment.dueDate %}
-                    <span class="text-xs font-medium {{ 'text-red-600 dark:text-red-400' if assignment.isMissing else 'text-gray-600 dark:text-gray-400' }} flex items-center"> <i class="fas fa-clock mr-1"></i> Due: {{ assignment.dueDate }} </span>
-                    {% else %}
-                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400">No Due Date</span>
-                    {% endif %}
+            <!-- Sort Dropdown -->
+            <div class="relative">
+                <select id="sortSelect" onchange="sortAssignments()" class="appearance-none bg-transparent pl-2 pr-8 py-1 text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
+                    <option value="due_asc">Due: Earliest First</option>
+                    <option value="due_desc">Due: Latest First</option>
+                    <option value="course">Course Name</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                    <i class="fas fa-chevron-down text-xs"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ assignment.title }}</h3>
-                {% if assignment.description %}
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{{ assignment.description }}</p>
-                {% endif %}
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="toggleMute('{{ assignment.id }}', this)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="{{ 'Show' if assignment.isMuted else 'Hide' }}">
-                    <i class="fas fa-{{ 'eye' if assignment.isMuted else 'eye-slash' }}"></i>
-                </button>
-                <a href="{{ assignment.alternateLink }}" target="_blank" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
             </div>
         </div>
     </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="text-center py-12">
-    <div class="text-green-500 mb-4">
-        <i class="fas fa-check-circle text-6xl"></i>
+
+    {% if assignments %}
+    <div class="space-y-4" id="assignmentsContainer">
+        {% for assignment in assignments %}
+        <div
+            class="group bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md hover:border-red-200 dark:hover:border-red-900/50 transition-all duration-200 assignment-card {{ 'opacity-60 grayscale' if assignment.isMuted else '' }} {{ 'hidden' if assignment.isMuted else '' }}"
+            data-due="{{ assignment.dueDate or '9999-99-99' }}"
+            data-course="{{ assignment.courseName }}"
+            data-muted="{{ 'true' if assignment.isMuted else 'false' }}"
+        >
+            <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+                <!-- Status Icon -->
+                <div class="flex-shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500 dark:text-red-400">
+                        <i class="fas fa-exclamation-circle text-xl"></i>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600"> {{ assignment.courseName }} </span>
+
+                        {% if assignment.dueDate %}
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2.5 py-0.5 rounded-md border border-red-100 dark:border-red-900/30"> <i class="fas fa-clock"></i> Due {{ assignment.dueDate }} </span>
+                        {% else %}
+                        <span class="text-xs font-medium text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700/50 px-2.5 py-0.5 rounded-md"> No Due Date </span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{{ assignment.title }}</h3>
+
+                    {% if assignment.description %}
+                    <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">{{ assignment.description }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2 sm:self-center pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-700 w-full sm:w-auto justify-end">
+                    <button onclick="toggleMute('{{ assignment.id }}', this)" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all" title="{{ 'Show' if assignment.isMuted else 'Hide' }}">
+                        <i class="fas fa-{{ 'eye' if assignment.isMuted else 'eye-slash' }}"></i>
+                    </button>
+
+                    <a href="{{ assignment.alternateLink }}" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 rounded-lg text-sm font-semibold hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">
+                        Open <i class="fas fa-external-link-alt text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    <h3 class="text-xl font-medium text-gray-600 dark:text-gray-400">All caught up!</h3>
-    <p class="text-gray-500 dark:text-gray-500 mt-2">No missing assignments found.</p>
+    {% else %}
+    <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+        <div class="w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-check text-3xl text-green-500 dark:text-green-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">All caught up!</h3>
+        <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">Great job! You have no missing assignments at the moment.</p>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
 
 <script>
     function toggleMutedVisibility() {
@@ -79,7 +104,6 @@
             if (isMuted) {
                 if (showMuted) {
                     card.classList.remove("hidden");
-                    card.classList.add("opacity-50");
                 } else {
                     card.classList.add("hidden");
                 }
@@ -128,7 +152,7 @@
                     icon.classList.remove("fa-eye-slash");
                     icon.classList.add("fa-eye");
                     btn.title = "Show";
-                    card.classList.add("opacity-50");
+                    card.classList.add("opacity-60", "grayscale");
 
                     // Hide if "Show Muted" is off
                     if (!document.getElementById("showMutedToggle").checked) {
@@ -138,13 +162,13 @@
                     icon.classList.remove("fa-eye");
                     icon.classList.add("fa-eye-slash");
                     btn.title = "Hide";
-                    card.classList.remove("opacity-50");
+                    card.classList.remove("opacity-60", "grayscale");
                     card.classList.remove("hidden");
                 }
             }
         } catch (error) {
             console.error("Error toggling mute:", error);
-            alert("Failed to update assignment status");
+            // Optional: Show a toast notification here
         }
     }
 </script>
