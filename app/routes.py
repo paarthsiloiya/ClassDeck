@@ -13,6 +13,16 @@ from app.models import User, Course, CourseTag, ItemTag, MutedItem, UserTag
 
 # Helper for file icons
 def get_file_icon(mime_type, title=None):
+    """
+    Determines the appropriate Font Awesome icon class for a given file MIME type.
+
+    Args:
+        mime_type (str): The MIME type of the file (e.g., 'application/pdf').
+        title (str, optional): The title of the file (unused, but kept for compatibility).
+
+    Returns:
+        str: A string containing the CSS classes for the icon (e.g., 'file-pdf text-red-500').
+    """
     if not mime_type:
         return 'file text-gray-500'
     
@@ -40,11 +50,29 @@ app.jinja_env.globals.update(get_file_icon=get_file_icon)
 
 @login.user_loader
 def load_user(id):
+    """
+    Flask-Login user loader callback.
+    
+    Args:
+        id (str): The user ID from the session.
+        
+    Returns:
+        User: The User object corresponding to the ID.
+    """
     return User.query.get(int(id))
 
 @app.route('/')
 @app.route('/index')
 def index():
+    """
+    Renders the main dashboard (index) page.
+    
+    Fetches the user's courses from Google Classroom, merges them with local database overrides,
+    checks for new assignments, and handles display sorting and filtering.
+    
+    Returns:
+        str: Rendered HTML template for the dashboard.
+    """
     courses = []
     if current_user.is_authenticated:
         # Build credentials from stored user data
@@ -212,13 +240,23 @@ def index():
     courses.sort(key=lambda x: x.get('display_order', 0))
     
     # Get user tags for filtering
-    user_tags = UserTag.query.filter_by(user_id=current_user.id).all()
+    user_tags = []
+    if current_user.is_authenticated:
+        user_tags = UserTag.query.filter_by(user_id=current_user.id).all()
             
     return render_template('index.html', title='Home', courses=courses, user_tags=user_tags)
 
 @app.route('/archived')
 @login_required
 def archived_courses():
+    """
+    Renders the archived courses page.
+    
+    Displays courses that are either archived in Google Classroom or locally archived by the user.
+    
+    Returns:
+        str: Rendered HTML template for archived courses.
+    """
     courses = []
     # Build credentials from stored user data
     credentials = Credentials(
@@ -264,6 +302,15 @@ def archived_courses():
 @app.route('/missing')
 @login_required
 def missing_assignments():
+    """
+    Renders the missing assignments page.
+    
+    Fetches all coursework from active courses, checks submission status, and identifies missing items.
+    Filters out items that the user has locally muted.
+    
+    Returns:
+        str: Rendered HTML template for missing assignments.
+    """
     assignments = []
     
     # Build credentials
@@ -377,9 +424,43 @@ def missing_assignments():
     
     return render_template('missing_assignments.html', title='Missing Assignments', assignments=assignments)
 
+@app.route('/update_course_order', methods=['POST'])
+@login_required
+def update_course_order():
+    """
+    Updates the display order of courses based on drag-and-drop input.
+    
+    Expects a JSON payload with an 'order' list containing Google Course IDs.
+    
+    Returns:
+        dict: Status dictionary {'status': 'success'}.
+    """
+    data = request.get_json()
+    ordered_ids = data.get('order', [])
+    
+    for index, google_id in enumerate(ordered_ids):
+        course = Course.query.filter_by(user_id=current_user.id, google_course_id=google_id).first()
+        if not course:
+            course = Course(user_id=current_user.id, google_course_id=google_id)
+            db.session.add(course)
+        
+        course.display_order = index
+        
+    db.session.commit()
+    return {'status': 'success'}
+
 @app.route('/course/<course_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_course(course_id):
+    """
+    Handles editing of course settings (name, section, tags, etc.).
+    
+    Args:
+        course_id (str): The Google Course ID.
+        
+    Returns:
+        str: Rendered HTML template for the edit form or a redirect.
+    """
     # Find or create local course record
     course = Course.query.filter_by(user_id=current_user.id, google_course_id=course_id).first()
     if not course:
@@ -392,10 +473,12 @@ def edit_course(course_id):
         course.custom_code = request.form.get('custom_code')
         course.custom_banner = request.form.get('custom_banner')
         course.custom_teacher_name = request.form.get('custom_teacher_name')
-        try:
-            course.display_order = int(request.form.get('display_order', 0))
-        except ValueError:
-            course.display_order = 0
+        
+        if 'display_order' in request.form:
+            try:
+                course.display_order = int(request.form.get('display_order', 0))
+            except ValueError:
+                course.display_order = 0
             
         course.is_archived = 'is_archived' in request.form
         
@@ -439,6 +522,15 @@ def edit_course(course_id):
 @app.route('/course/<course_id>/tags', methods=['POST'])
 @login_required
 def create_tag(course_id):
+    """
+    Creates a new tag for a specific course (Legacy/Specific Tag).
+    
+    Args:
+        course_id (str): The Google Course ID.
+        
+    Returns:
+        redirect: Redirects back to the course stream.
+    """
     # Ensure local course exists
     course = Course.query.filter_by(user_id=current_user.id, google_course_id=course_id).first()
     if not course:
@@ -469,6 +561,16 @@ def create_tag(course_id):
 @app.route('/course/<course_id>/tags/<int:tag_id>/delete', methods=['POST'])
 @login_required
 def delete_tag(course_id, tag_id):
+    """
+    Deletes a specific course tag.
+    
+    Args:
+        course_id (str): The Google Course ID.
+        tag_id (int): The ID of the tag to delete.
+        
+    Returns:
+        redirect: Redirects back to the course stream.
+    """
     tag = CourseTag.query.get_or_404(tag_id)
     # Verify ownership via course
     course = Course.query.get(tag.course_id)
@@ -484,6 +586,16 @@ def delete_tag(course_id, tag_id):
 @app.route('/course/<course_id>/items/<item_id>/tags', methods=['POST'])
 @login_required
 def toggle_item_tag(course_id, item_id):
+    """
+    Toggles a tag on a specific stream item (assignment).
+    
+    Args:
+        course_id (str): The Google Course ID.
+        item_id (str): The Google Item ID (assignment ID).
+        
+    Returns:
+        redirect: Redirects back to the course stream.
+    """
     tag_id = request.form.get('tag_id')
     if not tag_id:
         return 'Missing tag_id', 400
@@ -510,6 +622,16 @@ def toggle_item_tag(course_id, item_id):
 @app.route('/mute_assignment/<item_id>', methods=['POST'])
 @login_required
 def toggle_mute_assignment(item_id):
+    """
+    Toggles the muted state of an assignment (hides/shows it in Missing Assignments).
+    
+    Args:
+        item_id (str): The Google Item ID.
+        
+    Returns:
+        dict: JSON status if AJAX request.
+        redirect: Redirects to missing assignments page if standard request.
+    """
     muted = MutedItem.query.filter_by(user_id=current_user.id, google_item_id=item_id).first()
     if muted:
         db.session.delete(muted)
@@ -529,6 +651,18 @@ def toggle_mute_assignment(item_id):
 @app.route('/course/<course_id>')
 @login_required
 def course_stream(course_id):
+    """
+    Renders the stream view for a specific course.
+    
+    Fetches announcements, coursework, and materials from Google Classroom.
+    Merges with local tag data.
+    
+    Args:
+        course_id (str): The Google Course ID.
+        
+    Returns:
+        str: Rendered HTML template for the course stream.
+    """
     # Build credentials
     credentials = Credentials(
         token=current_user.access_token,
@@ -634,6 +768,12 @@ def course_stream(course_id):
 @app.route('/sync_calendar')
 @login_required
 def sync_calendar():
+    """
+    Placeholder route for calendar synchronization.
+    
+    Returns:
+        redirect: Redirects to index with a 'coming soon' message.
+    """
     # Placeholder for calendar sync logic
     # 1. Fetch assignments from Google Classroom
     # 2. Check if they exist in Google Calendar
@@ -644,6 +784,12 @@ def sync_calendar():
 
 @app.route('/login')
 def login():
+    """
+    Initiates the Google OAuth login flow.
+    
+    Returns:
+        redirect: Redirects the user to Google's authorization URL.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
         
@@ -662,6 +808,15 @@ def login():
 
 @app.route('/callback')
 def callback():
+    """
+    Handles the callback from Google OAuth.
+    
+    Exchanges the authorization code for tokens, fetches user info,
+    creates/updates the user record in the database, and logs the user in.
+    
+    Returns:
+        redirect: Redirects to the index page upon success.
+    """
     state = session['state']
     flow = Flow.from_client_secrets_file(
         app.config['GOOGLE_CLIENT_SECRETS_FILE'],
@@ -712,6 +867,12 @@ def callback():
 
 @app.route('/logout')
 def logout():
+    """
+    Logs the user out.
+    
+    Returns:
+        redirect: Redirects to the index page.
+    """
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))

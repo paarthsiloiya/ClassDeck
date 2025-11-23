@@ -1,3 +1,8 @@
+"""
+Database initialization script.
+Drops all existing tables and recreates them based on the current models.
+WARNING: This will delete all data in the database.
+"""
 from app import app, db
 from app.models import User, Course, CourseTag, ItemTag
 

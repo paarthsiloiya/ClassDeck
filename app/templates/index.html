@@ -4,7 +4,11 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
+            {% if current_user.is_authenticated %}
             <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome back, {{ current_user.name }}</p>
+            {% else %}
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome to ClassDeck</p>
+            {% endif %}
         </div>
 
         <!-- View Toggle & Notifications -->
@@ -116,8 +120,9 @@
 <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     {% for course in courses %}
     <div
-        class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 flex flex-col h-full course-card relative"
+        class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 flex flex-col h-full course-card relative cursor-move"
         data-tags="{{ course.tags|map(attribute='name')|join(',') }}"
+        data-course-id="{{ course.id }}"
     >
         <!-- Decorative Top Bar -->
         <div class="h-2 w-full bg-gradient-to-r from-primary-500 to-indigo-500"></div>
@@ -233,6 +238,7 @@
 </div>
 {% endif %}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
     function setView(view) {
         const gridContainer = document.getElementById("coursesGrid");
@@ -273,6 +279,29 @@
     document.addEventListener("DOMContentLoaded", () => {
         const savedView = localStorage.getItem("viewMode") || "grid";
         setView(savedView);
+
+        // Initialize Sortable for Grid View
+        var grid = document.getElementById("coursesGrid");
+        if (grid) {
+            new Sortable(grid, {
+                animation: 150,
+                ghostClass: "opacity-50",
+                onEnd: function () {
+                    var order = [];
+                    grid.querySelectorAll(".course-card").forEach(function (el) {
+                        order.push(el.getAttribute("data-course-id"));
+                    });
+
+                    fetch("/update_course_order", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ order: order }),
+                    });
+                },
+            });
+        }
     });
 
     // Close notification dropdown when clicking outside

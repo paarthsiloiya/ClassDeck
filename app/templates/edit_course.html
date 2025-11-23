@@ -96,19 +96,6 @@
                     <input type="hidden" name="tags" id="hidden-tags-input" value="{{ course.user_tags|map(attribute='name')|join(',') }}" />
                 </div>
 
-                <div>
-                    <label class="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2" for="display_order">Sort Order</label>
-                    <input
-                        class="w-32 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                        id="display_order"
-                        name="display_order"
-                        type="number"
-                        placeholder="0"
-                        value="{{ course.display_order if course.display_order else 0 }}"
-                    />
-                    <p class="text-xs text-slate-500 mt-1">Lower numbers appear first in the dashboard.</p>
-                </div>
-
                 <div class="pt-2">
                     <label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
                         <input type="checkbox" name="is_archived" class="w-5 h-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500" {% if course.is_archived %}checked{% endif %} />

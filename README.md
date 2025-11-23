@@ -11,6 +11,7 @@ No JavaScript is required for the core functionality.
 ## 🚀 Features
 
 ### 🎓 Enhanced Course Organization
+- **Drag and Drop** course cards to reorder them exactly how you want
 - Locally rename **Classes**, **Class Codes**, and **Sections**
 - Add custom **icons** and **banner images**
 - Pin, unpin, or **archive any class**
@@ -41,6 +42,17 @@ No JavaScript is required for the core functionality.
 - Only requests **read-only Google Classroom scopes**
 - Your customizations are stored **locally in your own database**
 - Actual Classroom data is never modified
+
+---
+
+## 📖 Documentation
+
+Full documentation is available at [https://paarthsiloiya.github.io/ClassDeck/](https://paarthsiloiya.github.io/ClassDeck/).
+
+It includes:
+- **Quick Start Guide**: How to set up and run the app.
+- **Configuration**: Detailed guide on Google API setup.
+- **Developer Guide**: Information about the codebase structure and modules.
 
 ---
 

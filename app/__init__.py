@@ -1,3 +1,7 @@
+"""
+The app package initializes the Flask application, database, and login manager.
+It also sets up configuration and imports routes and models.
+"""
 from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
@@ -16,3 +20,4 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 from app import routes, models
+
