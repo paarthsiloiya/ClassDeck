@@ -23,6 +23,10 @@ class Config:
     uri = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
     if uri and uri.startswith('postgres://'):
         uri = uri.replace('postgres://', 'postgresql://', 1)
+    
+    # Fallback for Vercel if no DB configured (avoids Read-only file system error)
+    if not uri and os.environ.get('VERCEL'):
+        uri = 'sqlite:////tmp/app.db'
         
     SQLALCHEMY_DATABASE_URI = uri or \
         'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'app.db')
