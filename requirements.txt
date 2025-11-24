@@ -9,3 +9,4 @@ cryptography
 sphinx
 shibuya
 psycopg2-binary
+Flask-Login
