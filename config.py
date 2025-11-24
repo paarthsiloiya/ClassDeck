@@ -17,13 +17,39 @@ class Config:
         GOOGLE_SCOPES (list): List of required Google API scopes.
     """
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    
+    # Database URL fix for Vercel/Heroku (postgres -> postgresql)
+    uri = os.environ.get('DATABASE_URL')
+    if uri and uri.startswith('postgres://'):
+        uri = uri.replace('postgres://', 'postgresql://', 1)
+        
+    SQLALCHEMY_DATABASE_URI = uri or \
         'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # OAuth 2.0 settings
-    OAUTHLIB_INSECURE_TRANSPORT = '1' # For local development only
-    GOOGLE_CLIENT_SECRETS_FILE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'client_secret.json')
+    # Only allow insecure transport if explicitly set (local dev)
+    OAUTHLIB_INSECURE_TRANSPORT = os.environ.get('OAUTHLIB_INSECURE_TRANSPORT')
+
+    # Handle Google Client Secrets from Env (for Vercel) or File
+    google_secrets_json = os.environ.get('GOOGLE_CLIENT_SECRETS_JSON')
+    if google_secrets_json:
+        import tempfile
+        # Create a temp file in /tmp (Vercel writable)
+        # We use a fixed path in /tmp to avoid creating multiple files on reloads if possible, 
+        # but NamedTemporaryFile is safer.
+        # However, on Vercel, /tmp is ephemeral per request/instance.
+        try:
+            temp_secrets = tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.json', dir='/tmp')
+            temp_secrets.write(google_secrets_json)
+            temp_secrets.close()
+            GOOGLE_CLIENT_SECRETS_FILE = temp_secrets.name
+        except Exception as e:
+            print(f"Error creating temp secrets file: {e}")
+            GOOGLE_CLIENT_SECRETS_FILE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'client_secret.json')
+    else:
+        GOOGLE_CLIENT_SECRETS_FILE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'client_secret.json')
+
     GOOGLE_SCOPES = [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
