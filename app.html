@@ -78,9 +78,138 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#app-models-module">app.models module</a></li>
-<li><a class="reference internal" href="#app-routes-module">app.routes module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-app.models">app.models module</a><ul>
+<li><a class="reference internal" href="#app.models.Course"><code class="docutils literal notranslate"><span class="pre">Course</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.Course.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.user_id"><code class="docutils literal notranslate">user_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.google_course_id"><code class="docutils literal notranslate">google_course_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_name"><code class="docutils literal notranslate">custom_name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_section"><code class="docutils literal notranslate">custom_section</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_code"><code class="docutils literal notranslate">custom_code</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_banner"><code class="docutils literal notranslate">custom_banner</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_icon"><code class="docutils literal notranslate">custom_icon</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.cached_teacher_name"><code class="docutils literal notranslate">cached_teacher_name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.custom_teacher_name"><code class="docutils literal notranslate">custom_teacher_name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.is_archived"><code class="docutils literal notranslate">is_archived</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.is_pinned"><code class="docutils literal notranslate">is_pinned</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.display_order"><code class="docutils literal notranslate">display_order</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.user_tags"><code class="docutils literal notranslate">user_tags</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate">cached_teacher_name</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate">custom_banner</span></code></a></li>
+<li><a class="reference internal" href="#id2"><code class="docutils literal notranslate">custom_code</span></code></a></li>
+<li><a class="reference internal" href="#id3"><code class="docutils literal notranslate">custom_icon</span></code></a></li>
+<li><a class="reference internal" href="#id4"><code class="docutils literal notranslate">custom_name</span></code></a></li>
+<li><a class="reference internal" href="#id5"><code class="docutils literal notranslate">custom_section</span></code></a></li>
+<li><a class="reference internal" href="#id6"><code class="docutils literal notranslate">custom_teacher_name</span></code></a></li>
+<li><a class="reference internal" href="#id7"><code class="docutils literal notranslate">display_order</span></code></a></li>
+<li><a class="reference internal" href="#id8"><code class="docutils literal notranslate">google_course_id</span></code></a></li>
+<li><a class="reference internal" href="#id9"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#id10"><code class="docutils literal notranslate">is_archived</span></code></a></li>
+<li><a class="reference internal" href="#id11"><code class="docutils literal notranslate">is_pinned</span></code></a></li>
+<li><a class="reference internal" href="#app.models.Course.query"><code class="docutils literal notranslate">query</span></code></a></li>
+<li><a class="reference internal" href="#id12"><code class="docutils literal notranslate">user_id</span></code></a></li>
+<li><a class="reference internal" href="#id13"><code class="docutils literal notranslate">user_tags</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.CourseTag"><code class="docutils literal notranslate"><span class="pre">CourseTag</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.CourseTag.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.CourseTag.course_id"><code class="docutils literal notranslate">course_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.CourseTag.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.CourseTag.color"><code class="docutils literal notranslate">color</span></code></a></li>
+<li><a class="reference internal" href="#id14"><code class="docutils literal notranslate">color</span></code></a></li>
+<li><a class="reference internal" href="#app.models.CourseTag.course"><code class="docutils literal notranslate">course</span></code></a></li>
+<li><a class="reference internal" href="#id15"><code class="docutils literal notranslate">course_id</span></code></a></li>
+<li><a class="reference internal" href="#id16"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#id17"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.CourseTag.query"><code class="docutils literal notranslate">query</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.ItemTag"><code class="docutils literal notranslate"><span class="pre">ItemTag</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.ItemTag.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.ItemTag.tag_id"><code class="docutils literal notranslate">tag_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.ItemTag.google_item_id"><code class="docutils literal notranslate">google_item_id</span></code></a></li>
+<li><a class="reference internal" href="#id18"><code class="docutils literal notranslate">google_item_id</span></code></a></li>
+<li><a class="reference internal" href="#id19"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.ItemTag.query"><code class="docutils literal notranslate">query</span></code></a></li>
+<li><a class="reference internal" href="#app.models.ItemTag.tag"><code class="docutils literal notranslate">tag</span></code></a></li>
+<li><a class="reference internal" href="#id20"><code class="docutils literal notranslate">tag_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.MutedItem"><code class="docutils literal notranslate"><span class="pre">MutedItem</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.MutedItem.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.MutedItem.user_id"><code class="docutils literal notranslate">user_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.MutedItem.google_item_id"><code class="docutils literal notranslate">google_item_id</span></code></a></li>
+<li><a class="reference internal" href="#id21"><code class="docutils literal notranslate">google_item_id</span></code></a></li>
+<li><a class="reference internal" href="#id22"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.MutedItem.query"><code class="docutils literal notranslate">query</span></code></a></li>
+<li><a class="reference internal" href="#id23"><code class="docutils literal notranslate">user_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.User"><code class="docutils literal notranslate"><span class="pre">User</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.User.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.google_id"><code class="docutils literal notranslate">google_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.email"><code class="docutils literal notranslate">email</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.picture"><code class="docutils literal notranslate">picture</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User._access_token"><code class="docutils literal notranslate">_access_token</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User._refresh_token"><code class="docutils literal notranslate">_refresh_token</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.token_expiry"><code class="docutils literal notranslate">token_expiry</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.token_uri"><code class="docutils literal notranslate">token_uri</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User._client_id"><code class="docutils literal notranslate">_client_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User._client_secret"><code class="docutils literal notranslate">_client_secret</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.scopes"><code class="docutils literal notranslate">scopes</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.courses"><code class="docutils literal notranslate">courses</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.access_token"><code class="docutils literal notranslate">access_token</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.client_id"><code class="docutils literal notranslate">client_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.client_secret"><code class="docutils literal notranslate">client_secret</span></code></a></li>
+<li><a class="reference internal" href="#id24"><code class="docutils literal notranslate">courses</span></code></a></li>
+<li><a class="reference internal" href="#id25"><code class="docutils literal notranslate">email</span></code></a></li>
+<li><a class="reference internal" href="#id26"><code class="docutils literal notranslate">google_id</span></code></a></li>
+<li><a class="reference internal" href="#id27"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#id28"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#id29"><code class="docutils literal notranslate">picture</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.query"><code class="docutils literal notranslate">query</span></code></a></li>
+<li><a class="reference internal" href="#app.models.User.refresh_token"><code class="docutils literal notranslate">refresh_token</span></code></a></li>
+<li><a class="reference internal" href="#id30"><code class="docutils literal notranslate">scopes</span></code></a></li>
+<li><a class="reference internal" href="#id31"><code class="docutils literal notranslate">token_expiry</span></code></a></li>
+<li><a class="reference internal" href="#id32"><code class="docutils literal notranslate">token_uri</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.UserTag"><code class="docutils literal notranslate"><span class="pre">UserTag</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.UserTag.id"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.UserTag.user_id"><code class="docutils literal notranslate">user_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.UserTag.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#id33"><code class="docutils literal notranslate">id</span></code></a></li>
+<li><a class="reference internal" href="#id34"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.UserTag.query"><code class="docutils literal notranslate">query</span></code></a></li>
+<li><a class="reference internal" href="#id35"><code class="docutils literal notranslate">user_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.decrypt_value"><code class="docutils literal notranslate"><span class="pre">decrypt_value()</span></code></a></li>
+<li><a class="reference internal" href="#app.models.encrypt_value"><code class="docutils literal notranslate"><span class="pre">encrypt_value()</span></code></a></li>
+<li><a class="reference internal" href="#app.models.get_cipher_suite"><code class="docutils literal notranslate"><span class="pre">get_cipher_suite()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.routes">app.routes module</a><ul>
+<li><a class="reference internal" href="#app.routes.archived_courses"><code class="docutils literal notranslate"><span class="pre">archived_courses()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.callback"><code class="docutils literal notranslate"><span class="pre">callback()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.course_stream"><code class="docutils literal notranslate"><span class="pre">course_stream()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.create_tag"><code class="docutils literal notranslate"><span class="pre">create_tag()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.delete_tag"><code class="docutils literal notranslate"><span class="pre">delete_tag()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.edit_course"><code class="docutils literal notranslate"><span class="pre">edit_course()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.get_file_icon"><code class="docutils literal notranslate"><span class="pre">get_file_icon()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.load_user"><code class="docutils literal notranslate"><span class="pre">load_user()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.missing_assignments"><code class="docutils literal notranslate"><span class="pre">missing_assignments()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.sync_calendar"><code class="docutils literal notranslate"><span class="pre">sync_calendar()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.toggle_item_tag"><code class="docutils literal notranslate"><span class="pre">toggle_item_tag()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.toggle_mute_assignment"><code class="docutils literal notranslate"><span class="pre">toggle_mute_assignment()</span></code></a></li>
+<li><a class="reference internal" href="#app.routes.update_course_order"><code class="docutils literal notranslate"><span class="pre">update_course_order()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app">Module contents</a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
@@ -120,14 +249,1103 @@ data-aria-dark="Switch to auto color mode">
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="app-models-module">
-<h2>app.models module<a class="headerlink" href="#app-models-module" title="Link to this heading">¶</a></h2>
+<section id="module-app.models">
+<span id="app-models-module"></span><h2>app.models module<a class="headerlink" href="#module-app.models" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Course">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Course</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Course" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents a course (class) in the application.
+Stores local overrides and settings for a Google Classroom course.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Course.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.Course.user_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key to the User.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.google_course_id">
+<span class="sig-name descname"><span class="pre">google_course_id</span></span><a class="headerlink" href="#app.models.Course.google_course_id" title="Link to this definition">¶</a></dt>
+<dd><p>ID of the course in Google Classroom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_name">
+<span class="sig-name descname"><span class="pre">custom_name</span></span><a class="headerlink" href="#app.models.Course.custom_name" title="Link to this definition">¶</a></dt>
+<dd><p>User-defined name for the course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_section">
+<span class="sig-name descname"><span class="pre">custom_section</span></span><a class="headerlink" href="#app.models.Course.custom_section" title="Link to this definition">¶</a></dt>
+<dd><p>User-defined section for the course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_code">
+<span class="sig-name descname"><span class="pre">custom_code</span></span><a class="headerlink" href="#app.models.Course.custom_code" title="Link to this definition">¶</a></dt>
+<dd><p>User-defined class code (enrollment code).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_banner">
+<span class="sig-name descname"><span class="pre">custom_banner</span></span><a class="headerlink" href="#app.models.Course.custom_banner" title="Link to this definition">¶</a></dt>
+<dd><p>URL to a custom banner image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_icon">
+<span class="sig-name descname"><span class="pre">custom_icon</span></span><a class="headerlink" href="#app.models.Course.custom_icon" title="Link to this definition">¶</a></dt>
+<dd><p>URL to a custom icon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.cached_teacher_name">
+<span class="sig-name descname"><span class="pre">cached_teacher_name</span></span><a class="headerlink" href="#app.models.Course.cached_teacher_name" title="Link to this definition">¶</a></dt>
+<dd><p>Cached name of the teacher from Google.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.custom_teacher_name">
+<span class="sig-name descname"><span class="pre">custom_teacher_name</span></span><a class="headerlink" href="#app.models.Course.custom_teacher_name" title="Link to this definition">¶</a></dt>
+<dd><p>User-defined teacher name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.is_archived">
+<span class="sig-name descname"><span class="pre">is_archived</span></span><a class="headerlink" href="#app.models.Course.is_archived" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the course is archived locally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.is_pinned">
+<span class="sig-name descname"><span class="pre">is_pinned</span></span><a class="headerlink" href="#app.models.Course.is_pinned" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the course is pinned (not currently used).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.display_order">
+<span class="sig-name descname"><span class="pre">display_order</span></span><a class="headerlink" href="#app.models.Course.display_order" title="Link to this definition">¶</a></dt>
+<dd><p>Order index for display sorting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.user_tags">
+<span class="sig-name descname"><span class="pre">user_tags</span></span><a class="headerlink" href="#app.models.Course.user_tags" title="Link to this definition">¶</a></dt>
+<dd><p>List of UserTags associated with this course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">cached_teacher_name</span></span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">custom_banner</span></span><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">custom_code</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">custom_icon</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">custom_name</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">custom_section</span></span><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">custom_teacher_name</span></span><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">display_order</span></span><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">google_course_id</span></span><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id9" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">is_archived</span></span><a class="headerlink" href="#id10" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">is_pinned</span></span><a class="headerlink" href="#id11" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Course.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.Course.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#id12" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">user_tags</span></span><a class="headerlink" href="#id13" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CourseTag">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CourseTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#CourseTag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CourseTag" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents a tag specific to a course, used for tagging items within that course.
+(Note: This seems to be a legacy or specific-use tag, distinct from UserTag).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.CourseTag.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.course_id">
+<span class="sig-name descname"><span class="pre">course_id</span></span><a class="headerlink" href="#app.models.CourseTag.course_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key to the Course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.CourseTag.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#app.models.CourseTag.color" title="Link to this definition">¶</a></dt>
+<dd><p>Color code for the tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#id14" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.course">
+<span class="sig-name descname"><span class="pre">course</span></span><a class="headerlink" href="#app.models.CourseTag.course" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">course_id</span></span><a class="headerlink" href="#id15" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id16" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#id17" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CourseTag.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.CourseTag.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.ItemTag">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">ItemTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#ItemTag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.ItemTag" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Associates a CourseTag with a specific item (assignment/material) in Google Classroom.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.ItemTag.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.ItemTag.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.ItemTag.tag_id">
+<span class="sig-name descname"><span class="pre">tag_id</span></span><a class="headerlink" href="#app.models.ItemTag.tag_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key to the CourseTag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.ItemTag.google_item_id">
+<span class="sig-name descname"><span class="pre">google_item_id</span></span><a class="headerlink" href="#app.models.ItemTag.google_item_id" title="Link to this definition">¶</a></dt>
+<dd><p>ID of the item in Google Classroom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">google_item_id</span></span><a class="headerlink" href="#id18" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id19" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.ItemTag.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.ItemTag.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.ItemTag.tag">
+<span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#app.models.ItemTag.tag" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">tag_id</span></span><a class="headerlink" href="#id20" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.MutedItem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">MutedItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#MutedItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.MutedItem" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents an item (assignment) that a user has muted/hidden from the ‘Missing Assignments’ list.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.MutedItem.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.MutedItem.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.MutedItem.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.MutedItem.user_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key to the User.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.MutedItem.google_item_id">
+<span class="sig-name descname"><span class="pre">google_item_id</span></span><a class="headerlink" href="#app.models.MutedItem.google_item_id" title="Link to this definition">¶</a></dt>
+<dd><p>ID of the item in Google Classroom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">google_item_id</span></span><a class="headerlink" href="#id21" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id22" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.MutedItem.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.MutedItem.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#id23" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.User">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.User" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents a user of the application.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.User.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.google_id">
+<span class="sig-name descname"><span class="pre">google_id</span></span><a class="headerlink" href="#app.models.User.google_id" title="Link to this definition">¶</a></dt>
+<dd><p>Unique Google ID of the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#app.models.User.email" title="Link to this definition">¶</a></dt>
+<dd><p>User’s email address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.User.name" title="Link to this definition">¶</a></dt>
+<dd><p>User’s full name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.picture">
+<span class="sig-name descname"><span class="pre">picture</span></span><a class="headerlink" href="#app.models.User.picture" title="Link to this definition">¶</a></dt>
+<dd><p>URL to the user’s profile picture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User._access_token">
+<span class="sig-name descname"><span class="pre">_access_token</span></span><a class="headerlink" href="#app.models.User._access_token" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypted OAuth access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User._refresh_token">
+<span class="sig-name descname"><span class="pre">_refresh_token</span></span><a class="headerlink" href="#app.models.User._refresh_token" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypted OAuth refresh token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.token_expiry">
+<span class="sig-name descname"><span class="pre">token_expiry</span></span><a class="headerlink" href="#app.models.User.token_expiry" title="Link to this definition">¶</a></dt>
+<dd><p>Expiration time of the access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.token_uri">
+<span class="sig-name descname"><span class="pre">token_uri</span></span><a class="headerlink" href="#app.models.User.token_uri" title="Link to this definition">¶</a></dt>
+<dd><p>URI for token refreshing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User._client_id">
+<span class="sig-name descname"><span class="pre">_client_id</span></span><a class="headerlink" href="#app.models.User._client_id" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypted OAuth client ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User._client_secret">
+<span class="sig-name descname"><span class="pre">_client_secret</span></span><a class="headerlink" href="#app.models.User._client_secret" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypted OAuth client secret.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.scopes">
+<span class="sig-name descname"><span class="pre">scopes</span></span><a class="headerlink" href="#app.models.User.scopes" title="Link to this definition">¶</a></dt>
+<dd><p>Comma-separated list of granted OAuth scopes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.courses">
+<span class="sig-name descname"><span class="pre">courses</span></span><a class="headerlink" href="#app.models.User.courses" title="Link to this definition">¶</a></dt>
+<dd><p>Relationship to the user’s courses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dynamic</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.User.access_token">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">access_token</span></span><a class="headerlink" href="#app.models.User.access_token" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypted OAuth access token.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.User.client_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_id</span></span><a class="headerlink" href="#app.models.User.client_id" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypted OAuth client ID.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.User.client_secret">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_secret</span></span><a class="headerlink" href="#app.models.User.client_secret" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypted OAuth client secret.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">courses</span></span><a class="headerlink" href="#id24" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id25">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#id25" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id26">
+<span class="sig-name descname"><span class="pre">google_id</span></span><a class="headerlink" href="#id26" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id27">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id27" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id28">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#id28" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id29">
+<span class="sig-name descname"><span class="pre">picture</span></span><a class="headerlink" href="#id29" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.User.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.User.refresh_token">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">refresh_token</span></span><a class="headerlink" href="#app.models.User.refresh_token" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypted OAuth refresh token.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id30">
+<span class="sig-name descname"><span class="pre">scopes</span></span><a class="headerlink" href="#id30" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id31">
+<span class="sig-name descname"><span class="pre">token_expiry</span></span><a class="headerlink" href="#id31" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id32">
+<span class="sig-name descname"><span class="pre">token_uri</span></span><a class="headerlink" href="#id32" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.UserTag">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">UserTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#UserTag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.UserTag" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents a global tag created by a user to organize their courses.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.UserTag.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.UserTag.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.UserTag.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.UserTag.user_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key to the User.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.UserTag.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.UserTag.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id33">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id33" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id34">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#id34" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.UserTag.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.models.UserTag.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id35">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#id35" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.decrypt_value">
+<span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">decrypt_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#decrypt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.decrypt_value" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypts an encrypted string value using the application’s cipher suite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>str</em>) – The encrypted string to decrypt.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decrypted string, or the original value if decryption fails or value is None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.encrypt_value">
+<span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">encrypt_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#encrypt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.encrypt_value" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts a string value using the application’s cipher suite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>str</em>) – The string to encrypt.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The encrypted string, or the original value if encryption fails or value is None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.get_cipher_suite">
+<span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">get_cipher_suite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#get_cipher_suite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.get_cipher_suite" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a Fernet cipher suite based on the application’s SECRET_KEY.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A Fernet instance for encryption/decryption.
+None: If an error occurs during key generation.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>cryptography.fernet.Fernet</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="app-routes-module">
-<h2>app.routes module<a class="headerlink" href="#app-routes-module" title="Link to this heading">¶</a></h2>
+<section id="module-app.routes">
+<span id="app-routes-module"></span><h2>app.routes module<a class="headerlink" href="#module-app.routes" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.archived_courses">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">archived_courses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#archived_courses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.archived_courses" title="Link to this definition">¶</a></dt>
+<dd><p>Renders the archived courses page.</p>
+<p>Displays courses that are either archived in Google Classroom or locally archived by the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rendered HTML template for archived courses.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.callback">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.callback" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the callback from Google OAuth.</p>
+<p>Exchanges the authorization code for tokens, fetches user info,
+creates/updates the user record in the database, and logs the user in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Redirects to the index page upon success.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.course_stream">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">course_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#course_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.course_stream" title="Link to this definition">¶</a></dt>
+<dd><p>Renders the stream view for a specific course.</p>
+<p>Fetches announcements, coursework, and materials from Google Classroom.
+Merges with local tag data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>course_id</strong> (<em>str</em>) – The Google Course ID.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rendered HTML template for the course stream.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.create_tag">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">create_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#create_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.create_tag" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new tag for a specific course (Legacy/Specific Tag).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>course_id</strong> (<em>str</em>) – The Google Course ID.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects back to the course stream.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.delete_tag">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">delete_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#delete_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.delete_tag" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a specific course tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>course_id</strong> (<em>str</em>) – The Google Course ID.</p></li>
+<li><p><strong>tag_id</strong> (<em>int</em>) – The ID of the tag to delete.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects back to the course stream.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.edit_course">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">edit_course</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#edit_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.edit_course" title="Link to this definition">¶</a></dt>
+<dd><p>Handles editing of course settings (name, section, tags, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>course_id</strong> (<em>str</em>) – The Google Course ID.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rendered HTML template for the edit form or a redirect.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.get_file_icon">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">get_file_icon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mime_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#get_file_icon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.get_file_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Determines the appropriate Font Awesome icon class for a given file MIME type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mime_type</strong> (<em>str</em>) – The MIME type of the file (e.g., ‘application/pdf’).</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – The title of the file (unused, but kept for compatibility).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string containing the CSS classes for the icon (e.g., ‘file-pdf text-red-500’).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.index">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.index" title="Link to this definition">¶</a></dt>
+<dd><p>Renders the main dashboard (index) page.</p>
+<p>Fetches the user’s courses from Google Classroom, merges them with local database overrides,
+checks for new assignments, and handles display sorting and filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rendered HTML template for the dashboard.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.load_user">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">load_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#load_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.load_user" title="Link to this definition">¶</a></dt>
+<dd><p>Flask-Login user loader callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – The user ID from the session.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The User object corresponding to the ID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app.models.User" title="app.models.User">User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.login">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.login" title="Link to this definition">¶</a></dt>
+<dd><p>Initiates the Google OAuth login flow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Redirects the user to Google’s authorization URL.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.logout">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.logout" title="Link to this definition">¶</a></dt>
+<dd><p>Logs the user out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Redirects to the index page.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.missing_assignments">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">missing_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#missing_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.missing_assignments" title="Link to this definition">¶</a></dt>
+<dd><p>Renders the missing assignments page.</p>
+<p>Fetches all coursework from active courses, checks submission status, and identifies missing items.
+Filters out items that the user has locally muted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rendered HTML template for missing assignments.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.sync_calendar">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">sync_calendar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#sync_calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.sync_calendar" title="Link to this definition">¶</a></dt>
+<dd><p>Placeholder route for calendar synchronization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Redirects to index with a ‘coming soon’ message.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.toggle_item_tag">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">toggle_item_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#toggle_item_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.toggle_item_tag" title="Link to this definition">¶</a></dt>
+<dd><p>Toggles a tag on a specific stream item (assignment).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>course_id</strong> (<em>str</em>) – The Google Course ID.</p></li>
+<li><p><strong>item_id</strong> (<em>str</em>) – The Google Item ID (assignment ID).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects back to the course stream.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>redirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.toggle_mute_assignment">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">toggle_mute_assignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#toggle_mute_assignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.toggle_mute_assignment" title="Link to this definition">¶</a></dt>
+<dd><p>Toggles the muted state of an assignment (hides/shows it in Missing Assignments).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item_id</strong> (<em>str</em>) – The Google Item ID.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON status if AJAX request.
+redirect: Redirects to missing assignments page if standard request.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.update_course_order">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">update_course_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#update_course_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.update_course_order" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the display order of courses based on drag-and-drop input.</p>
+<p>Expects a JSON payload with an ‘order’ list containing Google Course IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Status dictionary {‘status’: ‘success’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="module-app">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app" title="Link to this heading">¶</a></h2>
+<p>The app package initializes the Flask application, database, and login manager.
+It also sets up configuration and imports routes and models.</p>
 </section>
 </section>
 
