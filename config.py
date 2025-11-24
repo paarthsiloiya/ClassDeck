@@ -19,7 +19,8 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
     # Database URL fix for Vercel/Heroku (postgres -> postgresql)
-    uri = os.environ.get('DATABASE_URL')
+    # Vercel Postgres uses POSTGRES_URL by default
+    uri = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
     if uri and uri.startswith('postgres://'):
         uri = uri.replace('postgres://', 'postgresql://', 1)
         
