@@ -9,6 +9,13 @@ Welcome to ClassDeck's documentation!
 ClassDeck is a personal command center for Google Classroom. It allows users to manage classes, track assignments, and stay organized with a modern, streamlined dashboard.
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Legal
+
+   privacy
+   terms
+
+.. toctree::
    :maxdepth: 2
    :caption: Contents:
 
