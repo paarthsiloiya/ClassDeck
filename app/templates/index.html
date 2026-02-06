@@ -1,245 +1,271 @@
-{% extends "base.html" %} {% block content %}
-<!-- Header / Welcome Section -->
-<div class="mb-8">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
-            {% if current_user.is_authenticated %}
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome back, {{ current_user.name }}</p>
-            {% else %}
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome to ClassDeck</p>
-            {% endif %}
-        </div>
-
-        <!-- View Toggle & Notifications -->
-        <div class="flex items-center gap-3">
-            {% if courses %}
-            <div class="flex items-center bg-white dark:bg-slate-800 p-1 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <button onclick="setView('grid')" id="gridViewBtn" class="p-2 rounded-md transition-all duration-200 text-primary-600 bg-primary-50 dark:bg-primary-900/30 dark:text-primary-400">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button onclick="setView('list')" id="listViewBtn" class="p-2 rounded-md transition-all duration-200 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                    <i class="fas fa-list"></i>
-                </button>
-            </div>
-            {% endif %}
-
-            <!-- Notification Center -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            <div class="relative">
-                <button onclick="toggleNotifications()" class="bg-white dark:bg-slate-800 p-2.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 relative transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    {% if messages %}
-                    <span id="notificationBadge" class="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                    </span>
-                    {% endif %}
-                </button>
-
-                <!-- Dropdown -->
-                <div id="notificationDropdown" class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-xl z-50 border border-slate-100 dark:border-slate-700 overflow-hidden ring-1 ring-black ring-opacity-5 transform origin-top-right transition-all">
-                    <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm flex justify-between items-center">
-                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</h3>
-                        {% if messages %}
-                        <span class="text-xs bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 px-2.5 py-0.5 rounded-full font-medium">{{ messages|length }} New</span>
-                        {% endif %}
-                    </div>
-                    <div class="max-h-96 overflow-y-auto custom-scrollbar">
-                        {% if messages %} {% for category, message in messages %}
-                        <div class="p-4 border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                            <div class="flex items-start gap-3">
-                                <div class="flex-shrink-0 mt-0.5">
-                                    {% if category == 'success' %}
-                                    <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                                        <i class="fas fa-check text-xs"></i>
-                                    </div>
-                                    {% elif category == 'error' %}
-                                    <div class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
-                                        <i class="fas fa-exclamation text-xs"></i>
-                                    </div>
-                                    {% else %}
-                                    <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                        <i class="fas fa-info text-xs"></i>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    {% if message is mapping %}
-                                    <a href="{{ message.url }}" class="text-sm text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium block transition-colors"> {{ message.text }} <i class="fas fa-arrow-right text-xs ml-1 opacity-70"></i> </a>
-                                    {% else %}
-                                    <p class="text-sm text-slate-800 dark:text-slate-200">{{ message }}</p>
-                                    {% endif %}
-                                    <span class="text-xs text-slate-400 dark:text-slate-500 mt-1.5 block">Just now</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %} {% else %}
-                        <div class="p-8 text-center text-slate-400 dark:text-slate-500">
-                            <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-bell-slash text-lg opacity-50"></i>
-                            </div>
-                            <p class="text-sm">No new notifications</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endwith %}
-        </div>
-    </div>
-
-    <!-- Tag Filters -->
-    {% if user_tags %}
-    <div class="mt-6 flex items-center gap-2 overflow-x-auto pb-2 modern-scrollbar mask-linear-fade">
-        <button onclick="filterByTag('all')" class="tag-filter-btn active px-4 py-1.5 rounded-full text-sm font-medium bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap flex-shrink-0" data-tag="all">All Courses</button>
-        {% for tag in user_tags %}
-        <button
-            onclick="filterByTag('{{ tag.name }}')"
-            class="tag-filter-btn px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 whitespace-nowrap flex-shrink-0 shadow-sm"
-            data-tag="{{ tag.name }}"
-        >
-            {{ tag.name }}
-        </button>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-
-{% if not current_user.is_authenticated %}
-<div class="bg-gradient-to-br from-primary-600 to-indigo-700 rounded-3xl p-10 text-center text-white shadow-xl relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-    <div class="relative z-10 max-w-2xl mx-auto">
-        <h2 class="text-3xl font-bold mb-4">Welcome to ClassDeck</h2>
-        <p class="text-primary-100 text-lg mb-8 leading-relaxed">Your personal command center for Google Classroom. Manage classes, track assignments, and stay organized with a modern, streamlined dashboard.</p>
-        <a href="{{ url_for('login') }}" class="inline-flex items-center gap-2 bg-white text-primary-700 font-bold py-3 px-8 rounded-xl hover:bg-primary-50 hover:scale-105 transition-all duration-200 shadow-lg"> <i class="fab fa-google"></i> Login with Google </a>
-    </div>
-</div>
-{% endif %} {% if courses %}
-<!-- Grid View Container -->
-<div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    {% for course in courses %}
-    <div
-        class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 flex flex-col h-full course-card relative cursor-move"
-        data-tags="{{ course.tags|map(attribute='name')|join(',') }}"
-        data-course-id="{{ course.id }}"
-    >
-        <!-- Decorative Top Bar -->
-        <div class="h-2 w-full bg-gradient-to-r from-primary-500 to-indigo-500"></div>
-
-        <!-- Card Content -->
-        <div class="p-5 flex-1 flex flex-col">
-            <!-- Header -->
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center text-primary-600 dark:text-primary-400 text-xl font-bold shadow-sm group-hover:scale-110 transition-transform duration-300">{{ course.name[:1] }}</div>
-
-                <!-- Quick Actions (Hover) -->
-                <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 transform translate-x-2 group-hover:translate-x-0">
-                    <a href="{{ course.alternateLink }}" target="_blank" class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="Open in Google Classroom">
-                        <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <a href="{{ url_for('edit_course', course_id=course.id) }}" class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="Settings">
-                        <i class="fas fa-cog"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Title & Info -->
-            <div class="mb-4">
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 line-clamp-1" title="{{ course.name }}">{{ course.name }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">{{ course.section }}</p>
-
-                {% if course.enrollmentCode %}
-                <p class="text-xs text-slate-400 dark:text-slate-500 font-mono mb-3 select-all cursor-text" title="Class Code">{{ course.enrollmentCode }}</p>
+{% extends "base.html" %}
+{% block content %}
+    <!-- Header / Welcome Section -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
+                {% if current_user.is_authenticated %}
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome back, {{ current_user.name }}</p>
                 {% else %}
-                <div class="mb-3"></div>
-                {% endif %} {% if course.teacher_name %}
-                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 py-1.5 px-2.5 rounded-lg w-fit">
-                    <i class="fas fa-user-circle text-slate-400"></i>
-                    <span class="truncate max-w-[150px]">{{ course.teacher_name }}</span>
-                </div>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Welcome to ClassDeck</p>
                 {% endif %}
             </div>
-
-            <!-- Tags -->
-            {% if course.tags %}
-            <div class="flex flex-wrap gap-1.5 mb-4 mt-auto">
-                {% for tag in course.tags %}
-                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">{{ tag.name }}</span>
+            <!-- View Toggle & Notifications -->
+            <div class="flex items-center gap-3">
+                {% if courses %}
+                    <div class="flex items-center bg-white dark:bg-slate-800 p-1 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                        <button onclick="setView('grid')"
+                                id="gridViewBtn"
+                                class="p-2 rounded-md transition-all duration-200 text-primary-600 bg-primary-50 dark:bg-primary-900/30 dark:text-primary-400">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button onclick="setView('list')"
+                                id="listViewBtn"
+                                class="p-2 rounded-md transition-all duration-200 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                <!-- Notification Center -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    <div class="relative">
+                        <button onclick="toggleNotifications()"
+                                class="bg-white dark:bg-slate-800 p-2.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 relative transition-all duration-200">
+                            <i class="fas fa-bell text-lg"></i>
+                            {% if messages %}
+                                <span id="notificationBadge"
+                                      class="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                            {% endif %}
+                        </button>
+                        <!-- Dropdown -->
+                        <div id="notificationDropdown"
+                             class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-xl z-50 border border-slate-100 dark:border-slate-700 overflow-hidden ring-1 ring-black ring-opacity-5 transform origin-top-right transition-all">
+                            <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm flex justify-between items-center">
+                                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</h3>
+                                {% if messages %}
+                                    <span class="text-xs bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 px-2.5 py-0.5 rounded-full font-medium">{{ messages|length }} New</span>
+                                {% endif %}
+                            </div>
+                            <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="p-4 border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                            <div class="flex items-start gap-3">
+                                                <div class="flex-shrink-0 mt-0.5">
+                                                    {% if category == 'success' %}
+                                                        <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                                                            <i class="fas fa-check text-xs"></i>
+                                                        </div>
+                                                    {% elif category == 'error' %}
+                                                        <div class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+                                                            <i class="fas fa-exclamation text-xs"></i>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                                            <i class="fas fa-info text-xs"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    {% if message is mapping %}
+                                                        <a href="{{ message.url }}"
+                                                           class="text-sm text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium block transition-colors"> {{ message.text }} <i class="fas fa-arrow-right text-xs ml-1 opacity-70"></i> </a>
+                                                    {% else %}
+                                                        <p class="text-sm text-slate-800 dark:text-slate-200">{{ message }}</p>
+                                                    {% endif %}
+                                                    <span class="text-xs text-slate-400 dark:text-slate-500 mt-1.5 block">Just now</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="p-8 text-center text-slate-400 dark:text-slate-500">
+                                        <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
+                                            <i class="fas fa-bell-slash text-lg opacity-50"></i>
+                                        </div>
+                                        <p class="text-sm">No new notifications</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            </div>
+        </div>
+        <!-- Tag Filters -->
+        {% if user_tags %}
+            <div class="mt-6 flex items-center gap-2 overflow-x-auto pb-2 modern-scrollbar mask-linear-fade">
+                <button onclick="filterByTag('all')"
+                        class="tag-filter-btn active px-4 py-1.5 rounded-full text-sm font-medium bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm hover:shadow-md transition-all duration-200 whitespace-nowrap flex-shrink-0"
+                        data-tag="all">All Courses</button>
+                {% for tag in user_tags %}
+                    <button onclick="filterByTag('{{ tag.name }}')"
+                            class="tag-filter-btn px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 whitespace-nowrap flex-shrink-0 shadow-sm"
+                            data-tag="{{ tag.name }}">{{ tag.name }}</button>
                 {% endfor %}
             </div>
-            {% endif %}
-
-            <!-- Footer Action -->
-            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
-                <a href="{{ url_for('course_stream', course_id=course.id) }}" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-1.5 group/link">
-                    View Stream <i class="fas fa-arrow-right text-xs transition-transform group-hover/link:translate-x-1"></i>
-                </a>
+        {% endif %}
+    </div>
+    {% if not current_user.is_authenticated %}
+        <div class="bg-gradient-to-br from-primary-600 to-indigo-700 rounded-3xl p-10 text-center text-white shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            </div>
+            <div class="relative z-10 max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold mb-4">Welcome to ClassDeck</h2>
+                <p class="text-primary-100 text-lg mb-8 leading-relaxed">
+                    Your personal command center for Google Classroom. Manage classes, track assignments, and stay organized with a modern, streamlined dashboard.
+                </p>
+                <a href="{{ url_for("login") }}"
+                   class="inline-flex items-center gap-2 bg-white text-primary-700 font-bold py-3 px-8 rounded-xl hover:bg-primary-50 hover:scale-105 transition-all duration-200 shadow-lg"> <i class="fab fa-google"></i> Login with Google </a>
             </div>
         </div>
-    </div>
-    {% endfor %}
-</div>
-
-<!-- List View Container -->
-<div id="coursesList" class="flex flex-col gap-3 hidden">
-    {% for course in courses %}
-    <div
-        class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-5 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200 course-card"
-        data-tags="{{ course.tags|map(attribute='name')|join(',') }}"
-    >
-        <!-- Icon -->
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-sm">{{ course.name[:1] }}</div>
-
-        <!-- Content -->
-        <div class="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            <!-- Title Section -->
-            <div class="md:col-span-5 min-w-0">
-                <a href="{{ url_for('course_stream', course_id=course.id) }}" class="text-base font-bold text-slate-900 dark:text-white truncate hover:text-primary-600 dark:hover:text-primary-400 transition-colors block">{{ course.name }}</a>
-                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ course.section }}</p>
-            </div>
-
-            <!-- Teacher -->
-            <div class="hidden md:block md:col-span-3 min-w-0">
-                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                    <i class="fas fa-chalkboard-teacher text-slate-400"></i>
-                    <span class="truncate">{{ course.teacher_name }}</span>
+    {% endif %}
+    {% if courses %}
+        <!-- Grid View Container -->
+        <div id="coursesGrid"
+             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for course in courses %}
+                <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 flex flex-col h-full course-card relative cursor-move"
+                     data-tags="{{ course.tags|map(attribute='name') |join(',') }}"
+                     data-course-id="{{ course.id }}">
+                    <!-- Decorative Top Bar -->
+                    <div class="h-2 w-full bg-gradient-to-r from-primary-500 to-indigo-500"></div>
+                    <!-- Card Content -->
+                    <div class="p-5 flex-1 flex flex-col">
+                        <!-- Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center text-primary-600 dark:text-primary-400 text-xl font-bold shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                {{ course.name[:1] }}
+                            </div>
+                            <!-- Quick Actions (Hover) -->
+                            <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 transform translate-x-2 group-hover:translate-x-0">
+                                <a href="{{ course.alternateLink }}"
+                                   target="_blank"
+                                   class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                   title="Open in Google Classroom">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="{{ url_for('edit_course', course_id=course.id) }}"
+                                   class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                   title="Settings">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Title & Info -->
+                        <div class="mb-4">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 line-clamp-1"
+                                title="{{ course.name }}">{{ course.name }}</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">{{ course.section }}</p>
+                            {% if course.enrollmentCode %}
+                                <p class="text-xs text-slate-400 dark:text-slate-500 font-mono mb-3 select-all cursor-text"
+                                   title="Class Code">{{ course.enrollmentCode }}</p>
+                            {% else %}
+                                <div class="mb-3"></div>
+                            {% endif %}
+                            {% if course.teacher_name %}
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 py-1.5 px-2.5 rounded-lg w-fit">
+                                    <i class="fas fa-user-circle text-slate-400"></i>
+                                    <span class="truncate max-w-[150px]">{{ course.teacher_name }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- Tags -->
+                        {% if course.tags %}
+                            <div class="flex flex-wrap gap-1.5 mb-4 mt-auto">
+                                {% for tag in course.tags %}
+                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <!-- Footer Action -->
+                        <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                            <a href="{{ url_for('course_stream', course_id=course.id) }}"
+                               class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-1.5 group/link">
+                                View Stream <i class="fas fa-arrow-right text-xs transition-transform group-hover/link:translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Tags -->
-            <div class="hidden md:flex md:col-span-4 items-center gap-2 flex-wrap justify-end">
-                {% if course.tags %} {% for tag in course.tags %}
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">{{ tag.name }}</span>
-                {% endfor %} {% endif %}
-            </div>
+            {% endfor %}
         </div>
-
-        <!-- Actions -->
-        <div class="flex items-center gap-1 pl-4 border-l border-slate-100 dark:border-slate-700">
-            <a href="{{ course.alternateLink }}" target="_blank" class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700" title="Open in Google Classroom">
-                <i class="fas fa-external-link-alt"></i>
-            </a>
-            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700" title="Settings">
-                <i class="fas fa-cog"></i>
-            </a>
+        <!-- List View Container -->
+        <div id="coursesList" class="flex flex-col gap-3 hidden">
+            {% for course in courses %}
+                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-5 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200 course-card"
+                     data-tags="{{ course.tags|map(attribute='name') |join(',') }}">
+                    <!-- Icon -->
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                        {{ course.name[:1] }}
+                    </div>
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <!-- Title Section -->
+                        <div class="md:col-span-4 min-w-0">
+                            <a href="{{ url_for('course_stream', course_id=course.id) }}"
+                               class="text-base font-bold text-slate-900 dark:text-white truncate hover:text-primary-600 dark:hover:text-primary-400 transition-colors block">{{ course.name }}</a>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ course.section }}</p>
+                        </div>
+                        <!-- Class Code -->
+                        <div class="hidden md:block md:col-span-2 min-w-0">
+                            {% if course.enrollmentCode %}
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono"
+                                     title="Class Code">
+                                    <i class="fas fa-key text-slate-400"></i>
+                                    <span class="select-all">{{ course.enrollmentCode }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- Teacher -->
+                        <div class="hidden md:block md:col-span-3 min-w-0">
+                            <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                <i class="fas fa-chalkboard-teacher text-slate-400"></i>
+                                <span class="truncate">{{ course.teacher_name }}</span>
+                            </div>
+                        </div>
+                        <!-- Tags -->
+                        <div class="hidden md:flex md:col-span-3 items-center gap-2 flex-wrap justify-end">
+                            {% if course.tags %}
+                                {% for tag in course.tags %}
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">{{ tag.name }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="flex items-center gap-1 pl-4 border-l border-slate-100 dark:border-slate-700">
+                        <a href="{{ course.alternateLink }}"
+                           target="_blank"
+                           class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
+                           title="Open in Google Classroom">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <a href="{{ url_for('edit_course', course_id=course.id) }}"
+                           class="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
+                           title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    </div>
-    {% endfor %}
-</div>
-
-{% elif current_user.is_authenticated %}
-<div class="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
-    <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="fas fa-folder-open text-3xl text-slate-400"></i>
-    </div>
-    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No classes found</h3>
-    <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">You don't have any classes visible in this view. Try adjusting your filters or syncing with Google Classroom.</p>
-</div>
-{% endif %}
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script>
+    {% elif current_user.is_authenticated %}
+        <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+            <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-folder-open text-3xl text-slate-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No classes found</h3>
+            <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                You don't have any classes visible in this view. Try adjusting your filters or syncing with Google Classroom.
+            </p>
+        </div>
+    {% endif %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script>
     function setView(view) {
         const gridContainer = document.getElementById("coursesGrid");
         const listContainer = document.getElementById("coursesList");
@@ -380,5 +406,5 @@
             }
         });
     }
-</script>
+    </script>
 {% endblock %}
